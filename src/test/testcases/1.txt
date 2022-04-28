@@ -1,0 +1,7 @@
+
+        Class A{
+            getName(){
+               A::$b = 1;
+            }
+        }
+        

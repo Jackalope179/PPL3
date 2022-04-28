@@ -1,0 +1,7 @@
+
+        Class A{
+            getName(){
+                Val a:C = New A();
+            }
+        }
+        

@@ -1,0 +1,6 @@
+
+        Class A{
+            Val a:String;
+            Var a:Int;
+        }
+        

@@ -1,0 +1,8 @@
+
+        Class A{
+            getName(a:String; b: Int; d: Boolean ){}
+            Val a:String;
+            Var b:Int;
+            getName(){}
+        }
+        

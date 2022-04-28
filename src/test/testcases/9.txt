@@ -1,0 +1,1 @@
+Program([ClassDecl(Id('A'),[MethodDecl(Instance(),Id('getName'),[],Block([Block([ConstDecl(Id('a'),IntType(),None)]),Block([VarDecl(Id('a'),StringType())])]))])])
