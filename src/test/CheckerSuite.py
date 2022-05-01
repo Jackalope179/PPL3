@@ -3,6 +3,7 @@ from TestUtils import TestChecker
 from AST import *
 
 class CheckerSuite(unittest.TestCase):
+    
     # def test1(self):
     #     input = """
     #     Class A{
@@ -68,16 +69,32 @@ class CheckerSuite(unittest.TestCase):
     #     expect = "Undeclared Class: D"
     #     self.assertTrue(TestChecker.test(input,expect,13))
 
-    def test14(self):
+    # def test14(self):
+    #     input ="""
+    #     Class A{
+    #         Val a:Int;
+            
+    #         getName(a,b:String; c:Int){
+    #             Val e:String;
+    #             Val d:A = New X();
+
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,14))
+
+    def test15(self):
         input ="""
         Class A{
             getName(){
-                Val a:C = New A();
+                B::$a = 1;
             }
         }
         """
-        expect = "Redeclared Variable: d"
-        self.assertTrue(TestChecker.test(input,expect,14))
+        expect = """"""
+        self.assertTrue(TestChecker.test(input,expect,15))
+
     # def test_diff_numofparam_stmt(self):
     #     """More complex program"""
     #     input = """int main () {

@@ -1,7 +1,8 @@
 
         Class A{
             getName(){
-                Var a: A = New A();
+                B::$a = 1;
+
             }
         }
         

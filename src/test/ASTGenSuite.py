@@ -9,7 +9,7 @@ class ASTGenSuite(unittest.TestCase):
         input = """
         Class A{
             getName(){
-               a::$b = 1;
+                Var a: A = New A();
             }
         }
         """

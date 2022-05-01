@@ -1,1 +1,1 @@
-Program([ClassDecl(Id('A'),[MethodDecl(Id('getName'),Instance(),[],Block([AssignStmt(FieldAccess(Id('A'),Id('$b')),IntLit(1))]))])])
+Program([ClassDecl(Id('A'),[MethodDecl(Id('getName'),Instance(),[],Block([VarDecl(Id('a'),ClassType(Id('A')),NewExpr(Id('A'),[]))]))])])

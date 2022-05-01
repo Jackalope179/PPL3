@@ -1,7 +1,8 @@
 
         Class A{
-            getName(){
-                Val a:C = New A();
-            }
+            Val a:B;
+            Var a:B;
+            Val a:A = new B();
+            Var a:A = new B();
         }
         
