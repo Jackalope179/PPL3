@@ -2,7 +2,6 @@
         Class A{
             getName(){
                 B::$a = 1;
-
             }
         }
         

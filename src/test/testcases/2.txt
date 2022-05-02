@@ -1,8 +1,53 @@
 
-        Class A{
-            getName(a:String; b: Int; d: Boolean ){}
-            Val a:String;
-            Var b:Int;
-            getName(){}
+        Class C{
+            Val c: Int;
+            Val g,h,i, j, f,w: Int;
+            Var k, l, m: Boolean;
+            method(){
+                Val object: C = New C();
+
+                object.c = 1;
+                object.g = 1;
+                object.w = 1;
+                
+            }
+        }
+        Class A:C{
+            Val a: Int;
+            Var b: String;
+            method(){
+                Val obj:A = New A();
+                obj.att = 1;
+                Val a:String;
+                Var b:A;
+                c = c + 1;
+                Val d: C = New A();
+                g  = g * 2;
+                h  = h % 2;
+                i  = i + 2;
+                w= w + 1;
+            }
+            Var d: Int;
+        }
+        Class B:C{
+            Val a: Int;
+            method(a,b,c:A; d:Int; e:String){
+                Val f: C = New A();
+                m = !m ;
+            }
+        }
+        Class D:B{
+            getName(){
+                m = g + 1;
+                Val a:B = New D();
+                c = g * h + i /j - f;
+            }
+        }
+        Class Program{
+            main(){
+                Val test:C = New B();
+                Val test_:C = New D();
+                Return ;
+            }
         }
         

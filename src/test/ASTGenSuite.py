@@ -7,9 +7,10 @@ class ASTGenSuite(unittest.TestCase):
     def test1(self):
         """Simple program: int main() {} """
         input = """
-        Class A{
-            getName(){
-                Var a: A = New A();
+         Class Program{
+            Val a:Int;
+            main(a,b,c:Int){
+                Return;
             }
         }
         """

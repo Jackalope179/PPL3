@@ -1,7 +1,29 @@
 
-        Class A{
-            getName(){
-                Var a: A = New A();
+        Class C{
+            Val c: Int;
+        }
+        Class A:C{
+            Val a: Int;
+            Var b: String;
+            method(){
+                Val a:String;
+                Var b:A;
+                c = c + 1;
+                Val d: A = New C();
+               
+
+            }
+            Var d: Int;
+        }
+        Class B:A{
+            Val a: Int;
+            method(a,b,c:A; d:Int; e:String){
+                Val f: A = New B();
+            }
+        }
+        Class Program{
+            main(){
+                Return ;
             }
         }
         

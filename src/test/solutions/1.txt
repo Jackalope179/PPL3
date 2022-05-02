@@ -1,1 +1,1 @@
-Program([ClassDecl(Id('A'),[MethodDecl(Id('getName'),Instance(),[],Block([VarDecl(Id('a'),ClassType(Id('A')),NewExpr(Id('A'),[]))]))])])
+Type Mismatch In Constant Declaration: ConstDecl(Id('d'),ClassType(Id('A')),NewExpr(Id('C'),[]))

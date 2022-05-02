@@ -1,1 +1,1 @@
-Redeclared Method: getName
+Undeclared Attribute: att
