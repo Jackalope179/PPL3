@@ -366,7 +366,7 @@ class ASTGeneration(D96Visitor):
             elseStmt = self.visit(ctx.else_if_stm()) # => if statement || None || statement
             return If(expr, thenStmt, elseStmt)  
 
-    #  fix for statement
+    # fix for statement
     # for_stm: FOREACH LB ID IN expr DOTDOT expr (BY expr | ) RB blk_stmt;
     def visitFor_stm(self, ctx: D96Parser.For_stmContext):
         id = Id(ctx.ID().getText())

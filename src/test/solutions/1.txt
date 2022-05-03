@@ -1,1 +1,1 @@
-Type Mismatch In Constant Declaration: ConstDecl(Id('d'),ClassType(Id('A')),NewExpr(Id('C'),[]))
+Undeclared Identifier: i

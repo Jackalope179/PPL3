@@ -7,12 +7,19 @@ class ASTGenSuite(unittest.TestCase):
     def test1(self):
         """Simple program: int main() {} """
         input = """
-         Class Program{
-            Val a:Int;
-            main(a,b,c:Int){
+        Class A{
+        }
+        Class Program{
+            method(){
+                Val a: A = New A();
+                Val b:Int;
+                c = c + 1
+                ##b = a.method_();##
+            }
+            main(){
                 Return;
             }
-        }
+        }    
         """
         expect = "Program([ClassDecl(Id(A),Id(B),[])])"
         self.assertTrue(TestAST.test(input,expect,1))

@@ -1,0 +1,11 @@
+
+        Class Program{
+            method(){
+                Val b:Int;
+                c = c + 1;
+            }
+            main(){
+                Return;
+            }
+        }     
+        

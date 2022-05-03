@@ -1,29 +1,47 @@
 
-        Class C{
-            Val c: Int;
-        }
-        Class A:C{
-            Val a: Int;
-            Var b: String;
+        Class D{
             method(){
-                Val a:String;
-                Var b:A;
-                c = c + 1;
-                Val d: A = New C();
-               
+                Return 1;
+            }
+
+        }
+        Class A:D {
+            Val $a:Int;
+            Var b: Float;
+            getName(){
 
             }
-            Var d: Int;
         }
+
         Class B:A{
-            Val a: Int;
-            method(a,b,c:A; d:Int; e:String){
-                Val f: A = New B();
-            }
+
         }
         Class Program{
+            getName(){
+                Var obj_d: D = New B();
+                Var a:Int = 1;
+                ##Var obj_b: B = New B();
+                Val obj:A = New A();
+                Var b:Float = 1;
+                Var c:Int = 100;
+                Var d:Boolean = True;
+                Var e:Boolean = True;
+                obj.b = 3.0;
+                Val i:String;
+                Foreach(a In 1 .. 100){
+                    ##a = a + 1;##
+                }
+                If(a >1){
+                    ##i = "Hello";##
+                }
+                Foreach(c In 1+100 .. 1+1 ){
+                    ##a = a + 1;##
+                }
+                obj_d = obj_b;##
+                a = obj_d.method_();
+            }
             main(){
-                Return ;
+                Return;
             }
         }
         
