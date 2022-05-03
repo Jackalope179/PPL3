@@ -66,7 +66,7 @@ class CheckerSuite(unittest.TestCase):
                 Val a: D = New D();
                 Return a;
             }
-            program(){
+            program(a,b,c:Float; e:String; f:Boolean){
                 Return;
             }
 
@@ -92,7 +92,7 @@ class CheckerSuite(unittest.TestCase):
                 Var c:Int = 1;
                 ##b = a.getName();##
                 b = B::$staticMethod();
-                a.program();
+                a.program(1,2.0,3, "Hello", True);
 
             }
             main(){

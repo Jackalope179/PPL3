@@ -114,7 +114,7 @@ class StaticChecker(BaseVisitor):
             self.visitParam(param_,env)
         
         temp = self.visitBody(ast.body,env)
-        c[0]["array"][0][ast.name.name] = Symbol(ast.name.name,"Method", MType([p.varType for p in ast.param], temp))
+        c[0]["array"][0][ast.name.name] = Symbol(ast.name.name,"Method", MType([self.visit(p.varType,c).mtype for p in ast.param], temp))
         
         return c[0]["array"][0][ast.name.name]
 
@@ -302,15 +302,19 @@ class StaticChecker(BaseVisitor):
                 return Symbol(mtype = class_["name"], kind ="ClassType")
         raise Undeclared(Class(),ast.classname.name)
 
+    def isPrimitiveType(self, typ):
+        if typ in [1,2,3,4,6]: return True
+        return False
+
+
     def visitArrayCell(self, ast,c): 
-        arr = self.visit(ast.arr)
+        array = self.visit(ast.arr)
         '''E1[E2] => E1 must be array type'''
-        if isinstance(arr, Symbol):
-            if not isinstance(arr.mtype, ArrayType):
-                raise TypeMismatchInExpression(ast)
+        if not isinstance(array.mtype, Atype): raise TypeMismatchInExpression(ast)
+
         '''E1[E2] => E2 must be int'''
         for idx in ast.idx:
-            if self.visit(idx, c) != 1: 
+            if self.visit(idx, c).mtype != 1: 
                 raise TypeMismatchInExpression(ast)
 
     def IsStatic(self, name):
@@ -348,15 +352,30 @@ class StaticChecker(BaseVisitor):
             
             obj = self.visit(ast.obj, c) #=> Symbol(name, kind, A, value)
             className = obj.mtype
-
             '''Check if attribute is in parent class or not'''
             return self.checkMethodClass_Parent(className, attName, c, error)
 
 
     def visitCallExpr(self, ast,c):
+        '''E.<method name>(<args>)'''
+        '''E must be in class type'''
+        obj_ = self.visit(ast.obj,c) #=>Symbol
+        array_typ = [1,2,3,4,5,6]
+        if obj_.mtype in array_typ:
+            raise TypeMismatchInExpression(ast)
+
+        '''Method must be void type'''
         name = ast.method.name
         sym = self.checkAccess(ast, name, c, Method())
-        for param_ in ast.param: self.visit(param_,c)
+        if sym.mtype.rettype == 6 : raise TypeMismatchInExpression(ast)
+
+        '''Check number of argument'''
+        if len(ast.param) != len(sym.mtype.partype):
+            raise TypeMismatchInExpression(ast)
+
+        for i in range(len(sym.mtype.partype)):
+            if not self.checkTypeOfSide(sym.mtype.partype[i], self.visit(ast.param[i],c).mtype,c):
+                raise TypeMismatchInExpression(ast)                
         return sym
 
     def visitFieldAccess(self, ast,c):
@@ -378,7 +397,7 @@ class StaticChecker(BaseVisitor):
 
         if not self.checkTypeOfSide(lhs_type, rhs_type, c):
             raise TypeMismatchInStatement(ast)
-            
+
         # if self.visit(lhs.mtype, c) == 5:
         #     size = lhs.mtype.size
         #     eleType = lhs.mtype.eleType
@@ -441,13 +460,12 @@ class StaticChecker(BaseVisitor):
     
     def checkTypeOfSide(self, lhs, rhs, c):
         both_side_same = False
-
         '''LHS = float, RHS = int'''
         if lhs == rhs or (lhs == 2 and rhs == 1):
             both_side_same = True
 
         '''RHS are subtype of LHS'''
-        array_typ =[1,2,3,4,5,6]
+        array_typ = [1,2,3,4,5,6]
         if rhs not in array_typ and lhs not in array_typ:
             child_name = rhs
             parent_name = lhs
@@ -459,7 +477,9 @@ class StaticChecker(BaseVisitor):
 
     def visitCallStmt(self, ast,c):
         '''E.<method name>(<args>)'''
-
+        name = ast.method.name
+        self.checkAccess(ast, name, c, Method())
+        
         '''E must be in class type'''
         obj_ = self.visit(ast.obj,c) #=>Symbol
         array_typ = [1,2,3,4,5,6]
@@ -471,15 +491,18 @@ class StaticChecker(BaseVisitor):
         sym = self.checkAccess(ast, name, c, Method())
         if sym.mtype.rettype != 6 : raise TypeMismatchInStatement(ast)
 
+        '''Check number of argument'''
+        if len(ast.param) != len(sym.mtype.partype):
+            raise TypeMismatchInStatement(ast)
+
         for i in range(len(sym.mtype.partype)):
-            if not self.checkTypeOfSide(sym.mtype.partype[i], self.visit(ast.param[i],c).mtype):
+            if not self.checkTypeOfSide(sym.mtype.partype[i], self.visit(ast.param[i],c).mtype,c):
                 raise TypeMismatchInStatement(ast)                
         return sym
 
     def visitInstance(self, ast,c): pass
 
     def visitStatic(self, ast,c): pass
-
 
     '''Visit Type'''
     def visitIntType(self, ast,c):
@@ -495,7 +518,7 @@ class StaticChecker(BaseVisitor):
         return Symbol(mtype = 4, kind= "BoolType")
 
     def visitArrayType(self, ast,c):
-        typ = self.visit(ast.eleType, c).value  #=> symbol
+        typ = self.visit(ast.eleType, c).mtype  #=> symbol
         return Symbol(mtype = Atype(typ, ast.size), kind= "ArrayType")
     
     def visitVoidType(self, ast,c):
@@ -521,10 +544,10 @@ class StaticChecker(BaseVisitor):
         return Symbol(mtype = 4, kind = "BooleanLit")
 
     def visitNullLiteral(self, ast,c): 
-        return Symbol(None, None, "Null", None)
+        return Symbol(mtype="Null")
 
     def visitSelfLiteral(self, ast,c): 
-        return Symbol(None, None, "Self", None)
+        return Symbol(value="Self")
 
     # value: List[Expr]
     def visitArrayLiteral(self, ast,c): 
