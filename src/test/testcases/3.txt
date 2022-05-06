@@ -1,1 +1,15 @@
-Program([ClassDecl(Id('A'),[AttributeDecl(Instance(),ConstDecl(Id('a'),IntType(),None)),AttributeDecl(Instance(),VarDecl(Id('b'),StringType()))])])
+
+        Class A{
+            method(){
+                Val a:String;
+                Var b:String;
+                ##Val a:A = New A();##
+                b = a.att;
+            }
+        }
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        

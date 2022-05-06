@@ -3,12 +3,13 @@
  * @author nhphung
 """
 from ast import Pass
+from typing_extensions import Literal
 from AST import * 
 from Visitor import *
 from StaticError import *
-import copy
 
-from main.d96.utils.AST import Instance
+from main.d96.utils.AST import FieldAccess, NullLiteral
+
 
 class MType:
     def __init__(self,partype,rettype):
@@ -32,7 +33,11 @@ class StaticChecker(BaseVisitor):
     
     
     def __init__(self,ast):
+        self.check_const_decl = False
+        self.error_const_decl = False
         self.check_in_loop = False
+        self.check_inner_array = False
+
         self.ast = ast
         self.global_env = []
         self.check_entry = False
@@ -48,10 +53,8 @@ class StaticChecker(BaseVisitor):
 
         '''Check entry point'''
         if not self.check_entry: raise NoEntryPoint()
+        return []
 
-    # classname: Id
-    # memlist: List[MemDecl]
-    # parentname: Id = None
     def visitClassDecl(self, ast,c):
         parent_name = ast.parentname.name if ast.parentname else None
         undeclare_parent = True
@@ -89,14 +92,48 @@ class StaticChecker(BaseVisitor):
             raise Redeclared(Attribute(),name)
 
         '''Check undeclare class type'''
-        typ = self.visit(typ,c) # => Symbol
+        typ_ = self.visit(typ, c) #=> Symbol(mtype, kind)
+        
+        undeclare_class = True
+
+        if typ_.kind == "ClassType":
+            for class_ in c:
+                if typ_.mtype == class_["name"]: undeclare_class = False
+            if undeclare_class: raise Undeclared(Class(),typ_.mtype)
+        
+
+        '''Check with const decl'''
+        if kind == "Val":
+            if value is None: raise IllegalConstantExpression(None)
+
+            '''Visit value and check if operands is const'''
+            if isinstance(value, Id) or isinstance(value, Id):
+                    raise IllegalConstantExpression(ast.value)
+        
+            self.check_const_decl = True
+            value = self.visit(value,c) #=> Symbol
+            self.check_const_decl = False
+
+            if self.error_const_decl:
+                raise IllegalConstantExpression(ast.value)
+            
+            
+            if value.mtype == 6: raise IllegalConstantExpression(ast.value)
+
+
+            if not self.checkTypeOfSide(typ_.mtype, value.mtype,c, value.mtype): 
+                raise TypeMismatchInConstant(ast)
+
 
         '''Visit value'''
-        if value:
-            self.visit(value,c)
+        if kind == "Var":
+            if value:
+                value = self.visit(value,c)
+                if not self.checkTypeOfSide(typ_.mtype, value.mtype,c,value.mtype): 
+                    raise TypeMismatchInStatement(ast)
 
         '''Store attribute'''
-        c[0]["array"][0][name] = Symbol(name,kind,typ.mtype,value)
+        c[0]["array"][0][name] = Symbol(name,kind,typ_.mtype,value)
 
         return c[0]["array"][0][name]
 
@@ -133,12 +170,21 @@ class StaticChecker(BaseVisitor):
             raise Redeclared(Variable(),ast.variable.name)
 
         '''Check undeclare class => Var a:A''' 
-        if isinstance(ast.varType, ClassType): 
-            self.visit(ast.varType,c)
+        typ = self.visit(ast.varType, c) #=> Symbol(mtype, kind)
+        undeclare_class = True
+
+        if typ.kind == "ClassType":
+            for class_ in c:
+                if typ.mtype == class_["name"]: undeclare_class = False
+            if undeclare_class: raise Undeclared(Class(),typ.mtype)
+
 
         '''Visit Value'''
         if ast.varInit:
-            self.visit(ast.varInit,c)
+            value = self.visit(ast.varInit,c)
+
+            if not self.checkTypeOfSide(typ.mtype, value.mtype,c,self.visit(ast.varInit,c).mtype): 
+                raise TypeMismatchInStatement(ast)
 
         '''Store variable value'''
         c[0]["array"][0][ast.variable.name] = Symbol(ast.variable.name,"Var", self.visit(ast.varType,c).mtype, ast.varInit)
@@ -157,51 +203,26 @@ class StaticChecker(BaseVisitor):
                 if typ.mtype == class_["name"]: undeclare_class = False
             if undeclare_class: raise Undeclared(Class(),typ.mtype)
 
-        '''Check type if value is exist'''
-        if ast.value:
-            value = self.visit(ast.value,c) #=> Symbol
+        '''If value of const is None'''
+        if ast.value is None: raise IllegalConstantExpression(None)
 
-            both_side_same = False
+        '''Visit value and check if operands is const'''
+        if isinstance(ast.value, Id) or isinstance(ast.value, Id):
+                raise IllegalConstantExpression(ast.value)
+    
+        self.check_const_decl = True
+        value = self.visit(ast.value,c) #=> Symbol
+        self.check_const_decl = False
 
-            '''LHS = float, RHS = int'''
-            if typ.mtype == value.mtype or (typ.mtype == 2 and value.mtype == 1):
-                both_side_same = True
+        if self.error_const_decl:
+            raise IllegalConstantExpression(ast.value)
+        
+        
+        if value.mtype == 6: raise IllegalConstantExpression(ast.value)
+        """'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''"""
 
-            '''RHS are subtype of LHS -> subclasses'''
-            if typ.kind == "ClassType" and value.kind == "ClassType":
-                parent_name = typ.mtype   # => lhs
-                child_name = value.mtype  # => rhs
-                parent_list = []
-                parent_list = self.parentList(child_name, parent_list, c)
-                if parent_name in parent_list:
-                    both_side_same = True
-
-            '''LHS is array type'''
-            # if isinstance(constant, Symbol):
-            #     if self.visit(constant.mtype, c) == 5:
-            #         size = constant.mtype.size
-            #         eleType = value.mtype.eleType
-
-            #         '''Check size of LHS and RHS'''
-            #         if size != value.length: raise TypeMismatchInConstant(ast)
-
-            #         '''Check type of all element in RHS'''
-            #         for i in range(size):
-            #             if eleType == 2:
-            #                 '''If LHS is float => RHS is int or float'''
-            #                 if value[i] != 1  and value[i] != 2: raise TypeMismatchInConstant(ast)
-            #             elif eleType in [1,3,4]:
-            #                 if eleType != value[i]: raise TypeMismatchInConstant(ast)
-            #             else:
-            #                 '''If LHS is classType (className)'''
-                            
-            #                 both_side_same = False
-            #                 for class_ in c:
-            #                     if class_["name"] == value[i].mtype.classname.name and class_["parent"] == parent_name:
-            #                         both_side_same = True
-            #                 if not both_side_same: raise TypeMismatchInConstant(ast)
-
-            if both_side_same == False: raise TypeMismatchInConstant(ast)
+        if not self.checkTypeOfSide(typ.mtype, value.mtype,c,self.visit(ast.value,c).mtype): 
+            raise TypeMismatchInConstant(ast)
 
         '''Store constant value'''
         c[0]["array"][0][ast.constant.name] = Symbol(ast.constant.name,"Val",typ.mtype, ast.value)
@@ -240,21 +261,28 @@ class StaticChecker(BaseVisitor):
                     return self.recursiveCheckAttribute(target, class_, c)
 
     def visitId(self, ast,c):
-       
-
-        for i in range(len(c[0]["array"])-1):
-            if ast.name in c[0]["array"][i]:
-                return c[0]["array"][i][ast.name]  #=>Symbol
 
         '''Check if id is a class name'''
         for class_ in c:
             if class_["name"] == ast.name: return  Symbol(mtype = class_["name"], kind = "ClassType")
+        
+        for i in range(len(c[0]["array"])-1):
+            if ast.name in c[0]["array"][i]:
+                return c[0]["array"][i][ast.name]  #=>Symbol
+    
         raise Undeclared(Identifier(),ast.name)
 
     #int 1, float 2, string 3, bool 4
     def visitBinaryOp(self, ast,c): 
         lhs = self.visit(ast.left,c).mtype # => Symbol
         rhs = self.visit(ast.right,c).mtype # => Symbol
+        
+        '''Check constdecl'''
+        if self.check_const_decl:
+            if isinstance(ast.left, Id) or isinstance(ast.right, Id):
+                self.error_const_decl = True
+            if isinstance(ast.left, NullLiteral) or isinstance(ast.right, NullLiteral):
+                self.error_const_decl = True
 
         if ast.op in ['-', '+', '*', '/']:
             if lhs == 1 and rhs == 1: return Symbol(mtype=1, kind = "BinOp")
@@ -295,6 +323,9 @@ class StaticChecker(BaseVisitor):
             if typ == 1: return Symbol(mtype=1, kind = "UnaryOp")
             if typ == 2: return Symbol(mtype=2, kind = "UnaryOp")
             raise TypeMismatchInExpression(ast)
+        if self.check_const_decl:
+            if not isinstance(ast.body, BinaryOp) and not isinstance(ast.body, UnaryOp):
+                    self.error_const_decl = True
 
     def visitNewExpr(self, ast,c):
         for class_ in c:
@@ -306,9 +337,8 @@ class StaticChecker(BaseVisitor):
         if typ in [1,2,3,4,6]: return True
         return False
 
-
     def visitArrayCell(self, ast,c): 
-        array = self.visit(ast.arr)
+        array = self.visit(ast.arr, c)
         '''E1[E2] => E1 must be array type'''
         if not isinstance(array.mtype, Atype): raise TypeMismatchInExpression(ast)
 
@@ -325,8 +355,13 @@ class StaticChecker(BaseVisitor):
         for class_ in c:
             if class_["name"] == className:
                 '''Check in current class'''
-                for env_ in class_["array"]:
-                    if methodName in env_: return env_[methodName] #=> Symbol
+                if methodName in class_["array"][-1]:
+                    if self.check_const_decl:
+                        if class_["array"][-1][methodName].kind == "Var":
+                            self.error_const_decl = True
+                    return class_["array"][-1][methodName]
+                # for env_ in class_["array"]:
+                #     if methodName in env_: return env_[methodName] #=> Symbol
                 '''Check in parent class'''
                 if class_["parent"] is not None:
                     return self.checkMethodClass_Parent(class_["parent"], methodName, c, error)
@@ -344,25 +379,41 @@ class StaticChecker(BaseVisitor):
             return self.checkMethodClass_Parent(className, attName, c, error)
         else:
             '''Check undeclare object'''
-            undeclare = True
-            for i in range(len(c[0]["array"])-1):
-                if ast.obj.name in c[0]["array"][i]:
-                    undeclare = False
-            if undeclare: raise Undeclared(Identifier(), ast.obj.name)        
-            
-            obj = self.visit(ast.obj, c) #=> Symbol(name, kind, A, value)
-            className = obj.mtype
-            '''Check if attribute is in parent class or not'''
+            if not isinstance(ast.obj, SelfLiteral):                        
+                undeclare = True
+                for i in range(len(c[0]["array"])-1):
+                    
+                    if ast.obj.name in c[0]["array"][i]:
+                        undeclare = False
+                if undeclare: raise Undeclared(Identifier(), ast.obj.name)        
+                
+                obj = self.visit(ast.obj, c) #=> Symbol(name, kind, A, value)
+                className = obj.mtype
+                '''Check if attribute is in parent class or not'''
+            else:    
+                className = self.visit(ast.obj,c).mtype
             return self.checkMethodClass_Parent(className, attName, c, error)
-
 
     def visitCallExpr(self, ast,c):
         '''E.<method name>(<args>)'''
+
+        for class_ in c:
+            if ast.obj.name == class_["name"]:
+                if ast.method.name in class_["array"][-1]:
+                    if not self.IsStatic(ast.method.name):
+                        raise IllegalMemberAccess(ast)
+
         '''E must be in class type'''
         obj_ = self.visit(ast.obj,c) #=>Symbol
-        array_typ = [1,2,3,4,5,6]
+        array_typ = [1,2,3,4,6]
         if obj_.mtype in array_typ:
             raise TypeMismatchInExpression(ast)
+
+        for class_ in c:
+            if obj_.mtype == class_["name"]:
+                if ast.method.name in class_["array"][-1]:
+                    if self.IsStatic(ast.method.name):
+                        raise IllegalMemberAccess(ast)
 
         '''Method must be void type'''
         name = ast.method.name
@@ -374,13 +425,38 @@ class StaticChecker(BaseVisitor):
             raise TypeMismatchInExpression(ast)
 
         for i in range(len(sym.mtype.partype)):
-            if not self.checkTypeOfSide(sym.mtype.partype[i], self.visit(ast.param[i],c).mtype,c):
+            if not self.checkTypeOfSide(sym.mtype.partype[i], self.visit(ast.param[i],c).mtype,c, [self.visit(param,c).mtype for param in ast.param]):
                 raise TypeMismatchInExpression(ast)                
         return sym
 
     def visitFieldAccess(self, ast,c):
+        '''Class::<$static>'''
+        '''Object.<att>'''
+
+        '''if obj is class'''
+        if not isinstance(ast.obj, SelfLiteral):
+            for class_ in c:
+                if ast.obj.name == class_["name"] and ast.fieldname.name in class_["array"][-1] and not self.IsStatic(ast.fieldname.name):
+                    raise IllegalMemberAccess(ast)
+
+        obj = self.visit(ast.obj,c)
+        '''obj must be in class type'''
+        if obj.mtype in [1,2,3,4,6]:
+            raise TypeMismatchInExpression(ast)
+
+
+        #  obj::$a
+        if not isinstance(ast.obj, SelfLiteral):
+            for class_ in c:
+                if obj.mtype == class_["name"] and ast.obj.name != class_["name"]:
+                    if ast.fieldname.name in class_["array"][-1]:
+                        if self.IsStatic(ast.fieldname.name):
+                            raise IllegalMemberAccess(ast)
+        '''Trường hợp  att trùng với class name'''
+        
         name = ast.fieldname.name
-        '''Check is declared object, attribute'''
+        
+        '''Check declared object, attribute'''
         sym = self.checkAccess(ast, name, c, Attribute()) #=> symbol of attribute
         return sym
 
@@ -389,37 +465,13 @@ class StaticChecker(BaseVisitor):
         if lhs.kind == "Val": raise CannotAssignToConstant(ast)
 
         rhs = self.visit(ast.exp,c) # =>Symbol
-
-        lhs_type = lhs.mtype if not isinstance(lhs.mtype, MType) else lhs.mtype.rettype
+        lhs_type = lhs.mtype if not  isinstance(lhs.mtype, MType) else lhs.mtype.rettype
         rhs_type = rhs.mtype if not isinstance(rhs.mtype, MType) else rhs.mtype.rettype
         '''LHS cant be void'''
         if lhs_type == 6: raise TypeMismatchInStatement(ast)
 
-        if not self.checkTypeOfSide(lhs_type, rhs_type, c):
+        if not self.checkTypeOfSide(lhs_type, rhs_type, c, self.visit(ast.exp,c).mtype):
             raise TypeMismatchInStatement(ast)
-
-        # if self.visit(lhs.mtype, c) == 5:
-        #     size = lhs.mtype.size
-        #     eleType = lhs.mtype.eleType
-
-        #     '''Check size of LHS and RHS'''
-        #     if size != rhs.length: raise TypeMismatchInStatement(ast)
-
-        #     '''Check type of all element in RHS'''
-        #     for i in range(size):
-        #         if eleType == 2:
-        #             '''If LHS is float => RHS is int or float'''
-        #             if rhs[i] != 1  and rhs[i] != 2: raise TypeMismatchInStatement(ast)
-        #         elif eleType in [1,3,4]:
-        #             if eleType != rhs[i]: raise TypeMismatchInStatement(ast)
-        #         else:
-        #             '''If LHS is classType (className)'''
-                    
-        #             both_side_same = False
-        #             for class_ in c:
-        #                 if class_["name"] == rhs[i].mtype.classname.name and class_["parent"] == parent_name:
-        #                     both_side_same = True
-        #             if not both_side_same: raise TypeMismatchInStatement(ast)
 
         self.visit(ast.exp,c)
 
@@ -443,37 +495,50 @@ class StaticChecker(BaseVisitor):
         if scalar_var.kind == "Val": raise CannotAssignToConstant(Assign(ast.id,ast.expr1))
         
         '''Check break and continue in For loop'''
-        StaticChecker.check_in_loop = True
+        self.check_in_loop = True
         self.visit(ast.loop, c)
+        self.check_in_loop = False
 
     def visitBreak(self, ast,c):
-        if not StaticChecker.check_in_loop:
+        if not self.check_in_loop:
             raise MustInLoop(ast)
 
     def visitContinue(self, ast,c):
-        if not StaticChecker.check_in_loop:
+        if not self.check_in_loop:
             raise MustInLoop(ast)
 
     def visitReturn(self, ast,c):
         if ast.expr == None: return Symbol(mtype= 6)
         return self.visit(ast.expr, c)
     
-    def checkTypeOfSide(self, lhs, rhs, c):
-        both_side_same = False
+    def checkTypeOfSide(self, lhs, rhs, c, rhs_literal):
+
+        if isinstance(rhs_literal, list):
+            for i in range(len(rhs_literal)):
+                if not self.checkTypeOfSide(lhs, rhs_literal[i], c, rhs_literal[i]):
+                    return False
+            return True
+
         '''LHS = float, RHS = int'''
-        if lhs == rhs or (lhs == 2 and rhs == 1):
-            both_side_same = True
+        if lhs == rhs or (lhs == 2 and rhs == 1): return True
 
         '''RHS are subtype of LHS'''
-        array_typ = [1,2,3,4,5,6]
-        if rhs not in array_typ and lhs not in array_typ:
-            child_name = rhs
-            parent_name = lhs
-            parent_list = []
-            parent_list = self.parentList(child_name, parent_list, c)
-            if parent_name in parent_list:
-                both_side_same = True
-        return both_side_same
+        array_typ = [1,2,3,4,6]
+        if not (isinstance(lhs, Atype) and isinstance(rhs, Atype)):
+            if rhs not in array_typ and lhs not in array_typ:
+                child_name = rhs
+                parent_name = lhs
+                parent_list = []
+                parent_list = self.parentList(child_name, parent_list, c)
+                if parent_name in parent_list: return True
+        
+        if isinstance(lhs, Atype) and isinstance(rhs, Atype):    
+            if lhs.size != rhs_literal.size: return False
+            if not self.checkTypeOfSide(lhs.atype, rhs.atype, c, rhs.atype):
+                return False
+            return True   
+
+        return False
 
     def visitCallStmt(self, ast,c):
         '''E.<method name>(<args>)'''
@@ -496,7 +561,7 @@ class StaticChecker(BaseVisitor):
             raise TypeMismatchInStatement(ast)
 
         for i in range(len(sym.mtype.partype)):
-            if not self.checkTypeOfSide(sym.mtype.partype[i], self.visit(ast.param[i],c).mtype,c):
+            if not self.checkTypeOfSide(sym.mtype.partype[i], self.visit(ast.param[i],c).mtype,c, [self.visit(param,c).mtype for param in ast.param]):
                 raise TypeMismatchInStatement(ast)                
         return sym
 
@@ -504,7 +569,6 @@ class StaticChecker(BaseVisitor):
 
     def visitStatic(self, ast,c): pass
 
-    '''Visit Type'''
     def visitIntType(self, ast,c):
         return Symbol(mtype = 1, kind= "IntType")
 
@@ -519,7 +583,7 @@ class StaticChecker(BaseVisitor):
 
     def visitArrayType(self, ast,c):
         typ = self.visit(ast.eleType, c).mtype  #=> symbol
-        return Symbol(mtype = Atype(typ, ast.size), kind= "ArrayType")
+        return Symbol(mtype = Atype( ast.size, typ), kind= "ArrayType")
     
     def visitVoidType(self, ast,c):
         return Symbol(mtype = 6, kind= "VoidType")
@@ -529,7 +593,7 @@ class StaticChecker(BaseVisitor):
             if class_["name"] == ast.classname.name:
                 return Symbol(mtype = class_["name"], kind = "ClassType")
         raise Undeclared(Class(),ast.classname.name)
-
+    
     '''Visit Literal'''
     def visitIntLiteral(self, ast,c): 
         return Symbol(mtype = 1, kind = "IntLit")
@@ -544,18 +608,43 @@ class StaticChecker(BaseVisitor):
         return Symbol(mtype = 4, kind = "BooleanLit")
 
     def visitNullLiteral(self, ast,c): 
-        return Symbol(mtype="Null")
+        return Symbol(mtype=5, kind = "NullLit")
 
     def visitSelfLiteral(self, ast,c): 
-        return Symbol(value="Self")
+        return Symbol(mtype = c[0]["name"], kind="SelfLit")
+    
+    def recursiveCheckArrayType(self, l,r):
+        if l.size == r.size:
+            if isinstance(l.atype, Atype) and isinstance(r.atype, Atype):
+                return self.recursiveCheckArrayType(l.atype, r.atype)
+            else:
+                return l.atype == r.atype
+        return False
 
-    # value: List[Expr]
-    def visitArrayLiteral(self, ast,c): 
+    def innerCheckArray(self, ast,c, originals):
         for i in range (len(ast.value)-1):
-            if self.visit(ast.value[i]).value != self.visit(ast.value[i+1]).value:
-                raise IllegalArrayLiteral(ast) 
-        return Symbol(mtype = [self.visit(ast.value[i]).value for i in range (len(ast.value))])
-    '''Return Symbol(mtype = [1,2,3,4])'''
+            if isinstance(ast.value[i],ArrayLiteral) and isinstance(ast.value[i + 1],ArrayLiteral):
+                print("ArrayLiteral")
+                lhs = self.visitArray(ast.value[i],c, originals).mtype
+                rhs = self.visitArray(ast.value[i+1],c, originals).mtype
+            else: 
+                lhs = self.visit(ast.value[i],c).mtype
+                rhs = self.visit(ast.value[i],c).mtype
+
+            if isinstance(lhs, Atype) and isinstance(rhs, Atype):
+                if not self.recursiveCheckArrayType(lhs,rhs):
+                    raise IllegalArrayLiteral(originals)
+            else:   
+                if lhs != rhs: 
+                    raise IllegalArrayLiteral(originals)
+
+    def visitArray(self, ast, c, originals):
+        self.innerCheckArray(ast, c, originals)
+        return Symbol(mtype = Atype(size = len(ast.value), atype =self.visit(ast.value[0],c).mtype), kind= "ArrayLit")
+
+    def visitArrayLiteral(self, ast,c): 
+        self.innerCheckArray(ast,c, ast)
+        return Symbol(mtype = Atype(size = len(ast.value), atype =self.visit(ast.value[0],c).mtype), kind= "ArrayLit")
 
     def shallowCopy(self,c,env):
         for i in c:

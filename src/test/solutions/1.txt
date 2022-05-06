@@ -1,1 +1,1 @@
-Undeclared Identifier: i
+Program([ClassDecl(Id('A'),[AttributeDecl(Instance(),VarDecl(Id('a'),IntType())),MethodDecl(Id('program'),Instance(),[],Block([AssignStmt(FieldAccess(Self(),Id('a')),IntLit(1))]))]),ClassDecl(Id('Program'),[MethodDecl(Id('main'),Static(),[],Block([Return()]))])])

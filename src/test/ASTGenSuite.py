@@ -8,18 +8,16 @@ class ASTGenSuite(unittest.TestCase):
         """Simple program: int main() {} """
         input = """
         Class A{
+            Var a: Int;
+            program(){
+                Self.a = 1;
+            }
         }
         Class Program{
-            method(){
-                Val a: A = New A();
-                Val b:Int;
-                c = c + 1
-                ##b = a.method_();##
-            }
             main(){
                 Return;
             }
-        }    
+        }
         """
         expect = "Program([ClassDecl(Id(A),Id(B),[])])"
         self.assertTrue(TestAST.test(input,expect,1))

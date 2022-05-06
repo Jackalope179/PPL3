@@ -1,1 +1,18 @@
-Program([ClassDecl(Id('A'),[AttributeDecl(Instance(),ConstDecl(Id('a'),IntType(),None)),AttributeDecl(Instance(),VarDecl(Id('b'),StringType())),MethodDecl(Instance(),Id('getName'),[VarDecl(Id('a'),IntType()),VarDecl(Id('a'),IntType())],Block([]))])])
+
+        Class A{
+            Var $a: Int; 
+            Var b: Int;
+            getName(){}
+
+            method(){
+                Val A: A = New A();
+                A::$a = 1;
+            }
+        
+        }
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        

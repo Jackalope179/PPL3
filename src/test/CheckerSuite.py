@@ -56,52 +56,187 @@ class CheckerSuite(unittest.TestCase):
     #     expect = ""
     #     self.assertTrue(TestChecker.test(input,expect,1))
 
-    def test0(self):
+    # def test0(self):
+    #     input = """
+    #     Class D{
+    #         method(){
+    #             Return 1;
+    #         }
+    #         $static(){
+    #             Val a: D = New D();
+    #             Return a;
+    #         }
+    #         program(a,b,c:Float; e:String; f:Boolean){
+    #             Return;
+    #         }
+
+    #     }
+    #     Class A:D {
+    #         Val $a:Int;
+    #         Var b: Float;
+    #         getName(){
+    #             Return 1;
+    #         }
+    #         $staticMethod(){
+    #             Return "Hello";
+    #         }
+    #     }
+
+    #     Class B:A{
+
+    #     }
+    #     Class Program{
+    #         getName(){
+    #             Var a:B = New B();
+    #             Var b:String;
+    #             Var c:Int = 1;
+    #             ##b = a.getName();##
+    #             b = B::$staticMethod();
+    #             a.program(1,2.0,3, "Hello", True);
+
+    #         }
+    #         main(){
+    #             Return;
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,2))
+
+    # def test0(self):
+    #     input = """
+    #     Class A{
+    #         method(){
+    #             Val a:String;
+    #             Var b:String;
+    #             ##Val a:A = New A();##
+    #             b = a.att;
+    #         }
+    #     }
+    #     Class Program{
+    #         main(){
+    #             Return;
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,3))
+
+    # def test4(self):
+    #     input = """
+    #     Class A{
+    #         method(){
+    #             Var i :Int;
+    #             Foreach(i In 1 .. 100){
+    #                 Break;
+    #             }
+    #         }
+    #     }
+    #     Class Program{
+    #         main(){
+    #             Var i :Int;
+    #             Foreach(i In 1 .. 100){
+    #                 Break;
+    #                 Continue;
+    #             }
+    #             Return;
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,4))
+
+    # def test5(self):
+    #     input = """
+    #     Class A{
+    #         method(){
+    #             Var i :Int;
+    #             Foreach(i In 1 .. 100){
+    #                 Continue;
+    #             }
+    #         }
+    #     }
+    #     Class Program{
+    #         main(){
+    #             Var i :Int;
+    #             Foreach(i In 1 .. 100){
+    #                 Continue;
+    #                 Break;
+    #             }
+    #             Return;
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,5))
+
+    # def test0(self):
+    #     input = """
+    #     Class A{
+    #         Var $a: Int; 
+    #         Var b: Int;
+    #         getName(){}
+
+    #         method(){
+    #             Val A: A = New A();
+    #             A::$a = 1;
+    #         }
+        
+    #     }
+    #     Class Program{
+    #         main(){
+    #             Return;
+    #         }
+    #     }
+    #     """
+    #     expect = """"""
+    #     self.assertTrue(TestChecker.test(input,expect,5))
+
+
+    # def test0(self):
+    #     input = """
+    #     Class A{
+    #         ##Var a: Array[Float, 5] = Array(1, 2, 3, 4, 5);
+    #         Val b: Array[Float, 5] = Array(1, 2, 3, 4, 1);##
+
+    #         method(){
+    #             ##Val b: Array[Float, 5] = Array(1, 2, 3, 4, 1);
+    #             Var a: Array[Int, 5] = Array(1.0, 2.0, 3.6, 4.5, 1.2);
+    #             Val c: Array[Array[Int,2],2] = Array(Array(1.0,2.0),Array(3,4));##
+    #             Var a1: Int;
+    #             Var a2: Int;
+    #             Var a: Array[Array[Int,2],2] = Array(Array(a1,a2), Array(1,2));
+    #         }
+    #     }
+        
+    #     Class Program{
+    #         main(){
+    #             Return;
+    #         }
+    #     }
+    #     """
+    #     expect = """"""
+    #     self.assertTrue(TestChecker.test(input,expect,6))
+
+    def test7(self):
         input = """
-        Class D{
-            method(){
-                Return 1;
+        Class A{
+            Var a: Int;
+            program(){
+                Self.a = 1;
             }
-            $static(){
-                Val a: D = New D();
-                Return a;
-            }
-            program(a,b,c:Float; e:String; f:Boolean){
-                Return;
-            }
-
-        }
-        Class A:D {
-            Val $a:Int;
-            Var b: Float;
-            getName(){
-                Return 1;
-            }
-            $staticMethod(){
-                Return "Hello";
-            }
-        }
-
-        Class B:A{
-
         }
         Class Program{
-            getName(){
-                Var a:B = New B();
-                Var b:String;
-                Var c:Int = 1;
-                ##b = a.getName();##
-                b = B::$staticMethod();
-                a.program(1,2.0,3, "Hello", True);
-
-            }
             main(){
                 Return;
             }
         }
+
+
         """
-        expect = ""
-        self.assertTrue(TestChecker.test(input,expect,2))
+        expect = """"""
+        self.assertTrue(TestChecker.test(input,expect,7))
+
 
     # def test0(self):
     #     input ="""

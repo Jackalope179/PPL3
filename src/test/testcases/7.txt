@@ -1,1 +1,15 @@
-Program([ClassDecl(Id('A'),[AttributeDecl(Instance(),ConstDecl(Id('a'),IntType(),None)),AttributeDecl(Instance(),VarDecl(Id('b'),StringType())),MethodDecl(Instance(),Id('getName'),[VarDecl(Id('a'),IntType()),VarDecl(Id('b'),IntType())],Block([ConstDecl(Id('c'),StringType(),None),VarDecl(Id('d'),IntType())])),MethodDecl(Instance(),Id('getName_'),[VarDecl(Id('a'),StringType()),VarDecl(Id('b'),StringType()),VarDecl(Id('c'),StringType()),VarDecl(Id('e'),IntType())],Block([VarDecl(Id('d'),StringType())]))]),ClassDecl(Id('B'),[AttributeDecl(Instance(),VarDecl(Id('a'),StringType())),MethodDecl(Instance(),Id('getName'),[],Block([ConstDecl(Id('c'),BoolType(),None)])),MethodDecl(Instance(),Id('getName'),[],Block([]))])])
+
+        Class A{
+            Var a: Int;
+            program(){
+                Self.a = 1;
+            }
+        }
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+
+
+        

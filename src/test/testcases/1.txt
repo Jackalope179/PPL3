@@ -1,45 +1,11 @@
 
-        Class D{
-            method(){
-                Return 1;
+        Class A{
+            Var a: Int;
+            program(){
+                Self.a = 1;
             }
-
-        }
-        Class A:D {
-            Val $a:Int;
-            Var b: Float;
-            getName(){
-
-            }
-        }
-
-        Class B:A{
-
         }
         Class Program{
-            getName(){
-                Var obj_d: D = New B();
-                Var a:Int = 1;
-                ##Var obj_b: B = New B();
-                Val obj:A = New A();
-                Var b:Float = 1;
-                Var c:Int = 100;
-                Var d:Boolean = True;
-                Var e:Boolean = True;
-                obj.b = 3.0;
-                Val i:String;
-                Foreach(a In 1 .. 100){
-                    ##a = a + 1;##
-                }
-                If(a >1){
-                    ##i = "Hello";##
-                }
-                Foreach(c In 1+100 .. 1+1 ){
-                    ##a = a + 1;##
-                }
-                obj_d = obj_b;##
-                a = obj_d.method_();
-            }
             main(){
                 Return;
             }

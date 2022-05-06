@@ -1,1 +1,20 @@
-Program([ClassDecl(Id('A'),[AttributeDecl(Instance(),ConstDecl(Id('a'),IntType(),None)),AttributeDecl(Instance(),VarDecl(Id('b'),StringType())),MethodDecl(Instance(),Id('getName'),[VarDecl(Id('a'),IntType()),VarDecl(Id('b'),IntType())],Block([VarDecl(Id('c'),StringType()),ConstDecl(Id('c'),IntType(),None)]))])])
+
+        Class A{
+            ##Var a: Array[Float, 5] = Array(1, 2, 3, 4, 5);
+            Val b: Array[Float, 5] = Array(1, 2, 3, 4, 1);##
+            method(){
+                ##Val b: Array[Float, 5] = Array(1, 2, 3, 4, 1);
+                Var a: Array[Int, 5] = Array(1.0, 2.0, 3.6, 4.5, 1.2);
+                Val c: Array[Array[Int,2],2] = Array(Array(1.0,2.0),Array(3,4));##
+                Var a1: Int;
+                Var a2: Int;
+                Var a: Array[Array[Int,2],2] = Array(Array(a1,a2), Array(1,2));
+            }
+        }
+        
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        

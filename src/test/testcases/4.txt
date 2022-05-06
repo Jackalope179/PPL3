@@ -1,1 +1,20 @@
-Program([ClassDecl(Id('A'),[AttributeDecl(Instance(),ConstDecl(Id('a'),IntType(),None)),AttributeDecl(Instance(),VarDecl(Id('b'),StringType())),MethodDecl(Instance(),Id('getName'),[],Block([VarDecl(Id('a'),BoolType())]))])])
+
+        Class A{
+            method(){
+                Var i :Int;
+                Foreach(i In 1 .. 100){
+                    Break;
+                }
+            }
+        }
+        Class Program{
+            main(){
+                Var i :Int;
+                Foreach(i In 1 .. 100){
+                    Break;
+                    Continue;
+                }
+                Return;
+            }
+        }
+        

@@ -1,10 +1,21 @@
 class A:
-    def __init__():
+    def __init__(self): pass
+
+    def test(self):
+        print(B.att)
+        print(C.att)
+
+class B:
+    att = 1
+    def __init__(self): pass
+
+class C:
+    
+    att = 1
+    def __init__(self):
         pass
-class Test(A):
-    def __init__(self, name = None, age = None):
-        self.name = name
-        self.age = age
-a = Test(age = 4, name ="Hello")
-print(a.age)
-print(a.name)
+
+
+a = 16
+obj = A()
+obj.test()
