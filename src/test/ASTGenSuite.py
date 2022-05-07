@@ -8,14 +8,17 @@ class ASTGenSuite(unittest.TestCase):
         """Simple program: int main() {} """
         input = """
         Class A{
-            Var a: Int;
-            program(){
-                Self.a = 1;
-            }
+            Var x:Int;
         }
+
+        Class B{
+            Var x:A;
+        }
+
         Class Program{
             main(){
-                Return;
+                Var x: B;
+                x.a.x = 5;
             }
         }
         """

@@ -218,24 +218,25 @@ class CheckerSuite(unittest.TestCase):
     #     expect = """"""
     #     self.assertTrue(TestChecker.test(input,expect,6))
 
-    def test7(self):
-        input = """
-        Class A{
-            Var a: Int;
-            program(){
-                Self.a = 1;
-            }
-        }
-        Class Program{
-            main(){
-                Return;
-            }
-        }
+    # def test7(self):
+    #     input = """
+    #     Class A{
+    #         Var a: Float;
+    #         Var b: Int;
+    #         program(){
+    #             Self.b = Self.a;
+    #         }
+    #     }
+    #     Class Program{
+    #         main(){
+    #             Return;
+    #         }
+    #     }
 
 
-        """
-        expect = """"""
-        self.assertTrue(TestChecker.test(input,expect,7))
+    #     """
+    #     expect = """"""
+    #     self.assertTrue(TestChecker.test(input,expect,7))
 
 
     # def test0(self):
@@ -567,4 +568,189 @@ class CheckerSuite(unittest.TestCase):
     #                 CallExpr(Id("putIntLn"),[])]))])
     #     expect = "Type Mismatch In Statement: CallExpr(Id(putIntLn),List())"
     #     self.assertTrue(TestChecker.test(input,expect,405))
+
+
+    # def test_array_function_9(self):
+    #     input = """
+    #         Class A{
+    #             Var a: Array[Array[Int,2], 3] = Array(Array(1,2), Array(3,4), Array(5,6));
+    #         }
+    #         Class Program{
+    #             main(){
+    #                 Return;
+    #             }
+    #         }
+    #          """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 9'))
+    
+    # def test_array_function_10(self):
+    #     input = """
+    #         Class A{
+    #             Var a: Array[Array[Int,2], 3] = Array(Array(1,2,3), Array(3,4), Array(5,6));
+    #         }
+    #         Class Program{
+    #             main(){
+    #                 Return;
+    #             }
+    #         }
+    #          """
+    #     expect = "Illegal Array Literal: [[IntLit(1),IntLit(2),IntLit(3)],[IntLit(3),IntLit(4)],[IntLit(5),IntLit(6)]]"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 10'))
+    
+    # def test_array_function_11(self):
+    #     input = """
+    #         Class A{
+    #             Val a: Array[Array[Int,2], 3] = Array(1, Array(3,4), Array(5,6));
+    #         }
+    #         Class Program{
+    #             main(){
+    #                 Return;
+    #             }
+    #         }
+    #          """
+    #     expect = "Illegal Array Literal: [IntLit(1),[IntLit(3),IntLit(4)],[IntLit(5),IntLit(6)]]"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 11'))
+    
+    # def test_array_function_12(self):
+    #     input = """
+    #         Class A{
+    #             Var a: Array[Array[Int,2], 3] = Array(Array(1,2), Array(3,4), Array(5,6), Array(7,8));
+    #         }
+    #         Class Program{
+    #             main(){
+    #                 Return;
+    #             }
+    #         }
+    #          """
+    #     expect = "Type Mismatch In Statement: VarDecl(Id(a),ArrayType(3,ArrayType(2,IntType)),[[IntLit(1),IntLit(2)],[IntLit(3),IntLit(4)],[IntLit(5),IntLit(6)],[IntLit(7),IntLit(8)]])"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 12'))
+    
+    # def test_array_function_13(self):
+    #     input = """
+    #         Class A{
+    #             Var a: Array[Array[Int,2], 4] = Array(Array(1,2), Array(3,4), Array(5,6), Array(7,8));
+    #         }
+    #         Class Program{
+    #             main(){
+    #                 Return;
+    #             }
+    #         }
+    #          """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 13'))
+    
+    # def test_array_function_14(self):
+    #     input = """
+    #         Class A{
+    #             Val a: Array[Array[Int,2], 3] = Array(Array(1, 2), Array(3,4), Array(5,6.5));
+    #         }
+    #         Class Program{
+    #             main(){
+    #                 Return;
+    #             }
+    #         }
+    #          """
+    #     expect = "Illegal Array Literal: [[IntLit(1),IntLit(2)],[IntLit(3),IntLit(4)],[IntLit(5),FloatLit(6.5)]]"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 14'))
+    
+    # def test_array_function_15(self):
+    #     input = """
+    #         Class A{
+    #             Var a: Array[Float, 4] = Array(5.67, 1e10, 6.890, 2.5e-10);
+    #         }
+    #         Class Program{
+    #             main(){
+    #                 Return;
+    #             }
+    #         }
+    #          """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 15'))
+    
+    # def test_array_function_16(self):
+    #     input = """
+    #         Class A{
+    #             Val a: Array[Array[Array[String,2], 3], 1] = Array(Array(Array("khang", "best"), Array("heo","ngu"), Array("Hana", "cute")));
+    #             Var a: Array[Array[Array[String,2], 3], 1] = Array(Array(Array("1", "best"), Array("heo","ngu"), Array("khang", "pro")));
+
+    #         }
+    #         Class Program{
+    #             main(){
+    #                 Return;
+    #             }
+    #         }
+    #          """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 16'))
+
+    # def test_array_function_17(self):
+    #     input = """
+    #     Class A{
+    #         Var x:Int;
+    #     }
+
+    #     Class B{
+    #         Var x:A;
+    #     }
+
+    #     Class Program{
+    #         method(){
+    #             Var x: B;
+    #             x.x.x = 1;
+    #             Return 1;
+    #             Return 2;
+    #         }
+
+    #         main(){
+    #             B = 1;
+    #         }
+    #     }
+    #     """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 17'))
+
+    # def test_array_function_18(self):
+    #     input = """
+    #     Class A{}
+    #     Class Program{
+    #         main(){
+    #             Return;
+    #         }
+    #     }
+    #     Class B:A{
+    #         Var x:String;
+    #         x(){}
+    #         Var a:Int;
+    #         Var b:Int;
+    #         Var c:Int;
+    #         x(){}
+    #         Var x:String;
+
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input, expect,18))
+
+    def test0(self):
+        input = """
+        Class A{
+            Constructor(a,b:Int; c:String; d:Float){
+                Return;
+            }
+        }
+        Class Program{
+            program(){
+                Val a:A = New A(1,2,"Hello", 1.5);
+            }
+            main(){
+                Return;
+            }
+        }
+        """
+        expect = ""
+        self.assertTrue(TestChecker.test(input, expect, 'Test 0'))
+
+
+    
     

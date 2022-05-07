@@ -8,9 +8,15 @@
         }
 
         Class Program{
-            main(){
+            method(){
                 Var x: B;
-                x.a.x = 5;
+                x.x.x = 1;
+                Return 1;
+                Return 2;
+            }
+
+            main(){
+                B = 1;
             }
         }
         

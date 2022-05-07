@@ -1,0 +1,12 @@
+
+            Class A{
+                Val a: Array[Array[Array[String,2], 3], 1] = Array(Array(Array("khang", "best"), Array("heo","ngu"), Array("Hana", "cute")));
+                Var a: Array[Array[Array[String,2], 3], 1] = Array(Array(Array("1", "best"), Array("heo","ngu"), Array("khang", "pro")));
+
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             

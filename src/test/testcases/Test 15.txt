@@ -1,0 +1,10 @@
+
+            Class A{
+                Var a: Array[Float, 4] = Array(5.67, 1e10, 6.890, 2.5e-10);
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             

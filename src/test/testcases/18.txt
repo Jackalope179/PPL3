@@ -1,0 +1,18 @@
+
+        Class A{}
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        Class B:A{
+            Var x:String;
+            x(){}
+            Var a:Int;
+            Var b:Int;
+            Var c:Int;
+            x(){}
+            Var x:String;
+
+        }
+        

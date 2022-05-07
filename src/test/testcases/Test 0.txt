@@ -1,0 +1,15 @@
+
+        Class A{
+            Constructor(a,b:Int; c:String; d:Float){
+                Return 1;
+            }
+        }
+        Class Program{
+            program(){
+                Val a:A = New A(1,2,"Hello", 1.5);
+            }
+            main(){
+                Return;
+            }
+        }
+        

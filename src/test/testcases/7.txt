@@ -1,8 +1,9 @@
 
         Class A{
-            Var a: Int;
+            Var a: Float;
+            Var b: Int;
             program(){
-                Self.a = 1;
+                Self.b = Self.a;
             }
         }
         Class Program{

@@ -3,12 +3,11 @@
  * @author nhphung
 """
 from ast import Pass
-from typing_extensions import Literal
+import copy
 from AST import * 
 from Visitor import *
 from StaticError import *
 
-from main.d96.utils.AST import FieldAccess, NullLiteral
 
 
 class MType:
@@ -31,7 +30,6 @@ class Symbol:
 
 class StaticChecker(BaseVisitor):
     
-    
     def __init__(self,ast):
         self.check_const_decl = False
         self.error_const_decl = False
@@ -46,14 +44,14 @@ class StaticChecker(BaseVisitor):
         return self.visit(self.ast, self.global_env)
 
     def visitProgram(self,ast, c): 
-        # c = [{"array":[{}], "name": None, "parent":None}]
+        # c = [{"array":[[]], "name": None, "parent":None}]
         '''Visit all class in program'''
         for decl in ast.decl:
             self.visit(decl,c)
 
         '''Check entry point'''
         if not self.check_entry: raise NoEntryPoint()
-        return []
+        return ""
 
     def visitClassDecl(self, ast,c):
         parent_name = ast.parentname.name if ast.parentname else None
@@ -68,13 +66,31 @@ class StaticChecker(BaseVisitor):
         if parent_name and undeclare_parent: 
             raise Undeclared(Class(),parent_name) 
         
-        c.insert(0,{"array":[{}], "name": ast.classname.name, "parent":parent_name}) 
+        c.insert(0,{"array":[[]], "name": ast.classname.name, "parent":parent_name}) 
 
         '''Memlist -> Attribute Decl || Method Decl'''
         for mem in ast.memlist:
             res = self.visit(mem,c) # => return Symbol(name, kind, mtype, value)
-            if ast.classname.name == "Program" and res.name == "main" and len(res.mtype.partype) == 0 and res.mtype.rettype == 6:
+            if ast.classname.name == "Program" and res.name == "main" and res.kind == "Method" and len(res.mtype.partype) == 0 and res.mtype.rettype == 6:
                 self.check_entry = True
+
+    def checkExistingMember(self, list_of_env, target, kind):
+        for env in list_of_env:
+            for sym in env:
+                if sym.name == target and (sym.kind == kind == "Method" or (sym.kind  in ["Val", "Var"] and kind in ["Val", "Var"])): 
+                    return True, sym
+        return False, None
+
+    def checkExistingIdFunction(self, list_of_env, target):
+        for env in list_of_env:
+            for sym in env:
+                if sym.name == target: return True, sym
+        return False, None
+    
+    def checkExistingClassName(self, classname , c):
+        for class_ in c:
+                if classname == class_["name"]: return True
+        return False
 
     def visitAttributeDecl(self,ast,c):
         if isinstance(ast.decl, VarDecl):
@@ -87,27 +103,22 @@ class StaticChecker(BaseVisitor):
             kind = "Val"
             typ = ast.decl.constType # =>Type()
             value = ast.decl.value
-
-        if name in c[0]["array"][0]:
-            raise Redeclared(Attribute(),name)
+        
+        '''Check if id was declared or not'''
+        check_exist, sym = self.checkExistingMember([c[0]["array"][-1]], name, kind)
+        if check_exist : raise Redeclared(Attribute(), name)
 
         '''Check undeclare class type'''
         typ_ = self.visit(typ, c) #=> Symbol(mtype, kind)
-        
-        undeclare_class = True
-
         if typ_.kind == "ClassType":
-            for class_ in c:
-                if typ_.mtype == class_["name"]: undeclare_class = False
-            if undeclare_class: raise Undeclared(Class(),typ_.mtype)
-        
-
+            if not self.checkExistingClassName(typ_.mtype, c): raise Undeclared(Class,typ_.mtype)
+ 
         '''Check with const decl'''
         if kind == "Val":
             if value is None: raise IllegalConstantExpression(None)
 
             '''Visit value and check if operands is const'''
-            if isinstance(value, Id) or isinstance(value, Id):
+            if isinstance(value, Id) or isinstance(value, NullLiteral) or isinstance(value, SelfLiteral):
                     raise IllegalConstantExpression(ast.value)
         
             self.check_const_decl = True
@@ -117,9 +128,7 @@ class StaticChecker(BaseVisitor):
             if self.error_const_decl:
                 raise IllegalConstantExpression(ast.value)
             
-            
             if value.mtype == 6: raise IllegalConstantExpression(ast.value)
-
 
             if not self.checkTypeOfSide(typ_.mtype, value.mtype,c, value.mtype): 
                 raise TypeMismatchInConstant(ast)
@@ -127,88 +136,95 @@ class StaticChecker(BaseVisitor):
 
         '''Visit value'''
         if kind == "Var":
-            if value:
+            if value and not isinstance(value, NullLiteral):
                 value = self.visit(value,c)
                 if not self.checkTypeOfSide(typ_.mtype, value.mtype,c,value.mtype): 
                     raise TypeMismatchInStatement(ast)
 
+        sym = Symbol(name,kind,typ_.mtype,value)
         '''Store attribute'''
-        c[0]["array"][0][name] = Symbol(name,kind,typ_.mtype,value)
+        c[0]["array"][0] = [sym] + c[0]["array"][0]
 
-        return c[0]["array"][0][name]
+        return sym
 
     def visitMethodDecl(self, ast,c):
         env = []
         '''Copy c to env'''
-        self.shallowCopy(c,env)
+        env = copy.deepcopy(c)
 
+        name = ast.name.name
         '''Check if method was declared or not'''
-        if ast.name.name in env[0]["array"][0]:
-            raise Redeclared(Method(),ast.name.name)
-        env[0]["array"].insert(0, {})
+        check_exist, sym = self.checkExistingMember([c[0]["array"][-1]], name, "Method")
+        if check_exist: raise Redeclared(Method(), name)
+
+        env[0]["array"].insert(0,[])
 
         for param_ in ast.param:
             self.visitParam(param_,env)
         
-        temp = self.visitBody(ast.body,env)
-        c[0]["array"][0][ast.name.name] = Symbol(ast.name.name,"Method", MType([self.visit(p.varType,c).mtype for p in ast.param], temp))
+        temp = self.visitBody(ast.body,name,env)
+        result = Symbol(ast.name.name,"Method", MType([self.visit(p.varType,c).mtype for p in ast.param], temp))
+        c[0]["array"][0] = [result] + c[0]["array"][0]
         
-        return c[0]["array"][0][ast.name.name]
+        return result
 
-    def visitBody(self, ast, c):
+    def visitBody(self, ast,name, c):
         temp = 6
+        return_count = 0
         for inst_ in ast.inst:
             sym = self.visit(inst_,c)
             if isinstance(inst_, Return):
-                temp = sym.mtype
-                break
+                if name in ["Constructor", "main", "Destructor"]:
+                    if sym.mtype != 6:
+                        raise TypeMismatchInStatement(inst_)
+                return_count += 1
+                if return_count == 1:
+                    temp = sym.mtype
+                elif temp != sym.mtype:
+                    raise TypeMismatchInStatement(inst_)
+
         return temp
     '''--------------Decl--------------'''
     def visitVarDecl(self, ast,c): 
         '''Check if id was declared or not''' 
-        if ast.variable.name in c[0]["array"][0]:
-            raise Redeclared(Variable(),ast.variable.name)
+        name = ast.variable.name
+        check_exist, _ = self.checkExistingMember([c[0]["array"][0]], name, 'Val')
+        if check_exist: raise Redeclared(Variable(), name)
 
-        '''Check undeclare class => Var a:A''' 
+        '''Check undeclare class in Field access '''
         typ = self.visit(ast.varType, c) #=> Symbol(mtype, kind)
-        undeclare_class = True
-
         if typ.kind == "ClassType":
-            for class_ in c:
-                if typ.mtype == class_["name"]: undeclare_class = False
-            if undeclare_class: raise Undeclared(Class(),typ.mtype)
-
+            if not self.checkExistingClassName(typ.mtype, c): raise Undeclared(Class(),typ.mtype)
 
         '''Visit Value'''
-        if ast.varInit:
+        if ast.varInit and not isinstance(ast.varInit, NullLiteral):
             value = self.visit(ast.varInit,c)
 
             if not self.checkTypeOfSide(typ.mtype, value.mtype,c,self.visit(ast.varInit,c).mtype): 
                 raise TypeMismatchInStatement(ast)
 
+
+        result = Symbol(ast.variable.name,"Var", self.visit(ast.varType,c).mtype, ast.varInit)
         '''Store variable value'''
-        c[0]["array"][0][ast.variable.name] = Symbol(ast.variable.name,"Var", self.visit(ast.varType,c).mtype, ast.varInit)
+        c[0]["array"][0] =  [result] + c[0]["array"][0]
     
     def visitConstDecl(self, ast,c):
-        '''Check if id was declared or not''' 
-        if ast.constant.name in c[0]["array"][0]:
-            raise Redeclared(Constant(),ast.constant.name)
+        '''Check if id was declared or not'''
+        name = ast.constant.name
+        check_exist, _ = self.checkExistingIdFunction([c[0]["array"][0]], name)
+        if check_exist: raise Redeclared(Constant(), name)
 
-        '''Check declare class type =>  Val a: A'''
+        '''Check undeclare class in Field access '''
         typ = self.visit(ast.constType, c) #=> Symbol(mtype, kind)
-        undeclare_class = True
-        
         if typ.kind == "ClassType":
-            for class_ in c:
-                if typ.mtype == class_["name"]: undeclare_class = False
-            if undeclare_class: raise Undeclared(Class(),typ.mtype)
-
+            if not self.checkExistingClassName(typ.mtype, c): raise Undeclared(Class(),typ.mtype)
+        
         '''If value of const is None'''
         if ast.value is None: raise IllegalConstantExpression(None)
 
         '''Visit value and check if operands is const'''
-        if isinstance(ast.value, Id) or isinstance(ast.value, Id):
-                raise IllegalConstantExpression(ast.value)
+        if isinstance(ast.value, Id) or isinstance(ast.value, NullLiteral) or isinstance(ast.value, SelfLiteral):
+            raise IllegalConstantExpression(ast.value)
     
         self.check_const_decl = True
         value = self.visit(ast.value,c) #=> Symbol
@@ -224,54 +240,35 @@ class StaticChecker(BaseVisitor):
         if not self.checkTypeOfSide(typ.mtype, value.mtype,c,self.visit(ast.value,c).mtype): 
             raise TypeMismatchInConstant(ast)
 
+        result = Symbol(ast.constant.name,"Val",typ.mtype, ast.value)
         '''Store constant value'''
-        c[0]["array"][0][ast.constant.name] = Symbol(ast.constant.name,"Val",typ.mtype, ast.value)
-
-    def parentList(self, childName, parentList, c):
-        for class_ in c:
-            if class_["name"] == childName:
-                parentList.append(class_["name"])
-                if class_["parent"]:
-                    self.parentList(class_["parent"],parentList,c)
-                return parentList
+        c[0]["array"][0] = [result] +  c[0]["array"][0]
 
     def visitParam(self, ast, env):
-        if ast.variable.name in env[0]["array"][0]:
-            raise Redeclared(Parameter(),ast.variable.name)
-
+        '''Check if id was declared or not'''
+        name = ast.variable.name
+        check_exist, _ = self.checkExistingIdFunction([env[0]["array"][0]], name)
+        if check_exist: raise Redeclared(Parameter(), name)
+        
         '''Check undeclare class in param'''
         self.visit(ast.varType, env)
-        env[0]["array"][0][ast.variable.name] = Symbol(ast.variable.name,"Var",self.visit(ast.varType, env).mtype, ast.varInit)
+        result = Symbol(ast.variable.name,"Var",self.visit(ast.varType, env).mtype, ast.varInit)
+        env[0]["array"][0] = [result] + env[0]["array"][0] 
     
     def visitBlock(self, ast,c):
-        env = []
-        self.shallowCopy(c,env)
-        env[0]["array"].insert(0, {})
+        env = copy.deepcopy(c)
+        env[0]["array"].insert(0, [])
 
         for inst_ in ast.inst:
             self.visit(inst_,env)
 
-    def recursiveCheckAttribute(self, target, currentClass, c):
-        for env_ in currentClass["array"]:
-            if target in env_:
-                return env_[target]  #=> Symbol
-        if currentClass["parent"] is not None:
-            for class_ in c:
-                if class_["name"] == currentClass["parent"]:
-                    return self.recursiveCheckAttribute(target, class_, c)
-
     def visitId(self, ast,c):
-
-        '''Check if id is a class name'''
-        for class_ in c:
-            if class_["name"] == ast.name: return  Symbol(mtype = class_["name"], kind = "ClassType")
-        
-        for i in range(len(c[0]["array"])-1):
-            if ast.name in c[0]["array"][i]:
-                return c[0]["array"][i][ast.name]  #=>Symbol
-    
-        raise Undeclared(Identifier(),ast.name)
-
+        '''Check if id was declared or not'''
+        name = ast.name
+        check_exist, id = self.checkExistingIdFunction(c[0]["array"][:-1], name)
+        if not check_exist: raise Undeclared(Identifier(),name)
+        return id
+      
     #int 1, float 2, string 3, bool 4
     def visitBinaryOp(self, ast,c): 
         lhs = self.visit(ast.left,c).mtype # => Symbol
@@ -328,10 +325,24 @@ class StaticChecker(BaseVisitor):
                     self.error_const_decl = True
 
     def visitNewExpr(self, ast,c):
+        classname = ast.classname.name
+        if not self.checkExistingClassName(classname, c):
+            raise Undeclared(Class(), classname)
+        constructor_exist = True
         for class_ in c:
-            if class_["name"] == ast.classname.name:
-                return Symbol(mtype = class_["name"], kind ="ClassType")
-        raise Undeclared(Class(),ast.classname.name)
+            if class_["name"] == classname:
+                constructor_exist, sym = self.checkExistingMember([class_["array"][-1]], "Constructor", "Method")
+        if not constructor_exist: 
+            if len(ast.param) > 0: raise TypeMismatchInStatement(ast)
+        else:
+            if len(ast.param) != len(sym.mtype.partype): raise TypeMismatchInStatement(ast)
+            print(ast.param)
+            print(sym.mtype.partype)
+            for i in range(len(ast.param)):
+                if not self.checkTypeOfSide(sym.mtype.partype[i],self.visit(ast.param[i],c).mtype,c, self.visit(ast.param[i],c).mtype):
+                    raise TypeMismatchInStatement(ast)
+
+        return Symbol(mtype = classname, kind ="ClassType")
 
     def isPrimitiveType(self, typ):
         if typ in [1,2,3,4,6]: return True
@@ -348,77 +359,77 @@ class StaticChecker(BaseVisitor):
                 raise TypeMismatchInExpression(ast)
 
     def IsStatic(self, name):
-        if name[0] == "$": return True
+        if name[0] == "$" or name == "main": return True
         return False
 
-    def checkMethodClass_Parent(self, className, methodName, c, error):
+    def checkMemberOfClass(self, className, memberName, c, error, type):
         for class_ in c:
             if class_["name"] == className:
                 '''Check in current class'''
-                if methodName in class_["array"][-1]:
-                    if self.check_const_decl:
-                        if class_["array"][-1][methodName].kind == "Var":
-                            self.error_const_decl = True
-                    return class_["array"][-1][methodName]
-                # for env_ in class_["array"]:
-                #     if methodName in env_: return env_[methodName] #=> Symbol
-                '''Check in parent class'''
-                if class_["parent"] is not None:
-                    return self.checkMethodClass_Parent(class_["parent"], methodName, c, error)
-        raise Undeclared(error, methodName)
+                for member in class_["array"][-1]:
+                    if member.name == memberName:
+                        if (member.kind == type == "Method") or (type in ["Val", "Var"] and member.kind in ["Val", "Var"]): 
+                            '''If LSH is val'''
+                            if self.check_const_decl:
+                                if member.kind == "Var":
+                                    self.error_const_decl = True
+                        
+                            return member #=>Symbol
+        raise Undeclared(error, memberName)
 
-    def checkAccess(self, ast, attName, c, error): 
-        if self.IsStatic(attName):
-            declare_class = False
-            for class_ in c:
-                if class_["name"] == ast.obj.name: 
-                    declare_class = True
-                    break
-            className = ast.obj.name
-            if not declare_class: raise Undeclared(Class(), className)
-            return self.checkMethodClass_Parent(className, attName, c, error)
+    def checkAccess(self, ast, memberName, c, error, type): 
+        if self.IsStatic(memberName):
+            '''ClassName:: $static_member'''
+            if not self.checkExistingClassName(ast.obj.name, c):
+                raise Undeclared(Class(), ast.obj.name)
+            return self.checkMemberOfClass(ast.obj.name, memberName, c, error, type) # => Symbol
         else:
             '''Check undeclare object'''
-            if not isinstance(ast.obj, SelfLiteral):                        
-                undeclare = True
-                for i in range(len(c[0]["array"])-1):
-                    
-                    if ast.obj.name in c[0]["array"][i]:
-                        undeclare = False
-                if undeclare: raise Undeclared(Identifier(), ast.obj.name)        
+            if isinstance(ast.obj, Id):
+                if not self.checkExistingIdFunction(c[0]["array"][:-1], ast.obj.name):
+                    raise Undeclared(Identifier(), ast.obj.name)
                 
                 obj = self.visit(ast.obj, c) #=> Symbol(name, kind, A, value)
                 className = obj.mtype
-                '''Check if attribute is in parent class or not'''
             else:    
                 className = self.visit(ast.obj,c).mtype
-            return self.checkMethodClass_Parent(className, attName, c, error)
+            return self.checkMemberOfClass(className, memberName, c, error, type)  
 
     def visitCallExpr(self, ast,c):
         '''E.<method name>(<args>)'''
 
+        '''obj.method()'''
+        '''A::$method()'''
+
+        '''Access instance method with class error'''
         for class_ in c:
             if ast.obj.name == class_["name"]:
-                if ast.method.name in class_["array"][-1]:
-                    if not self.IsStatic(ast.method.name):
+                check, _ = self.checkMemberOfClass(class_["array"][:-1], ast.obj.name, "Val")
+                if not check:
+                    '''obj is a class name'''
+                    check, sym = self.checkExistingIdFunction(class_["array"][:-1], ast.method.name, "Method")
+                    if check and not self.IsStatic(sym.name):
                         raise IllegalMemberAccess(ast)
 
-        '''E must be in class type'''
+        '''E is not a className'''   
+        '''E must be in object in class type'''
         obj_ = self.visit(ast.obj,c) #=>Symbol
         array_typ = [1,2,3,4,6]
         if obj_.mtype in array_typ:
+            '''E is not in class type => int, float,...'''
             raise TypeMismatchInExpression(ast)
 
+        '''Access static method with object error'''
         for class_ in c:
             if obj_.mtype == class_["name"]:
-                if ast.method.name in class_["array"][-1]:
-                    if self.IsStatic(ast.method.name):
-                        raise IllegalMemberAccess(ast)
+                check, sym = self.checkExistingIdFunction([class_["array"][-1]], ast.method.name)
+                if check and sym.kind == "Method" and self.IsStatic(ast.method.name):
+                    raise IllegalMemberAccess(ast)
 
         '''Method must be void type'''
         name = ast.method.name
-        sym = self.checkAccess(ast, name, c, Method())
-        if sym.mtype.rettype == 6 : raise TypeMismatchInExpression(ast)
+        sym = self.checkAccess(ast, name, c, Method(), "Method")
+        if sym.mtype.rettype != 6 : raise TypeMismatchInExpression(ast)
 
         '''Check number of argument'''
         if len(ast.param) != len(sym.mtype.partype):
@@ -431,33 +442,41 @@ class StaticChecker(BaseVisitor):
 
     def visitFieldAccess(self, ast,c):
         '''Class::<$static>'''
+
         '''Object.<att>'''
-
+        multability = "Val"
         '''if obj is class'''
-        if not isinstance(ast.obj, SelfLiteral):
+        if isinstance(ast.obj, Id):
             for class_ in c:
-                if ast.obj.name == class_["name"] and ast.fieldname.name in class_["array"][-1] and not self.IsStatic(ast.fieldname.name):
-                    raise IllegalMemberAccess(ast)
+                if ast.obj.name == class_["name"]:
+                    check, _ = self.checkExistingIdFunction(class_["array"][:-1], ast.obj.name)
+                    if not check:
+                        '''obj is a class name'''
+                        check, sym = self.checkExistingIdFunction(class_["array"][:-1], ast.method.name)
+                        multability = sym.kind
+                        if check and sym.kind != "Method" and not self.IsStatic(sym.name):
+                            raise IllegalMemberAccess(ast)
 
-        obj = self.visit(ast.obj,c)
-        '''obj must be in class type'''
-        if obj.mtype in [1,2,3,4,6]:
+
+        '''E is not a className'''   
+        '''E must be in object in class type'''
+        obj_ = self.visit(ast.obj,c) #=>Symbol
+        array_typ = [1,2,3,4,6]
+        if obj_.mtype in array_typ:
+            '''E is not in class type => int, float,...'''
             raise TypeMismatchInExpression(ast)
 
 
-        #  obj::$a
-        if not isinstance(ast.obj, SelfLiteral):
-            for class_ in c:
-                if obj.mtype == class_["name"] and ast.obj.name != class_["name"]:
-                    if ast.fieldname.name in class_["array"][-1]:
-                        if self.IsStatic(ast.fieldname.name):
-                            raise IllegalMemberAccess(ast)
-        '''Trường hợp  att trùng với class name'''
-        
+        '''Access static field with object error'''
+        for class_ in c:
+            if obj_.mtype == class_["name"]:
+                check, sym = self.checkExistingIdFunction([class_["array"][-1]], ast.fieldname.name)
+                multability = sym.kind
+                if check and sym.kind != "Method" and self.IsStatic(ast.fieldname.name):
+                    raise IllegalMemberAccess(ast)
+
         name = ast.fieldname.name
-        
-        '''Check declared object, attribute'''
-        sym = self.checkAccess(ast, name, c, Attribute()) #=> symbol of attribute
+        sym = self.checkAccess(ast, name, c, Method(), multability)
         return sym
 
     def visitAssign(self, ast,c):
@@ -465,7 +484,7 @@ class StaticChecker(BaseVisitor):
         if lhs.kind == "Val": raise CannotAssignToConstant(ast)
 
         rhs = self.visit(ast.exp,c) # =>Symbol
-        lhs_type = lhs.mtype if not  isinstance(lhs.mtype, MType) else lhs.mtype.rettype
+        lhs_type = lhs.mtype if not isinstance(lhs.mtype, MType) else lhs.mtype.rettype
         rhs_type = rhs.mtype if not isinstance(rhs.mtype, MType) else rhs.mtype.rettype
         '''LHS cant be void'''
         if lhs_type == 6: raise TypeMismatchInStatement(ast)
@@ -512,7 +531,6 @@ class StaticChecker(BaseVisitor):
         return self.visit(ast.expr, c)
     
     def checkTypeOfSide(self, lhs, rhs, c, rhs_literal):
-
         if isinstance(rhs_literal, list):
             for i in range(len(rhs_literal)):
                 if not self.checkTypeOfSide(lhs, rhs_literal[i], c, rhs_literal[i]):
@@ -522,16 +540,6 @@ class StaticChecker(BaseVisitor):
         '''LHS = float, RHS = int'''
         if lhs == rhs or (lhs == 2 and rhs == 1): return True
 
-        '''RHS are subtype of LHS'''
-        array_typ = [1,2,3,4,6]
-        if not (isinstance(lhs, Atype) and isinstance(rhs, Atype)):
-            if rhs not in array_typ and lhs not in array_typ:
-                child_name = rhs
-                parent_name = lhs
-                parent_list = []
-                parent_list = self.parentList(child_name, parent_list, c)
-                if parent_name in parent_list: return True
-        
         if isinstance(lhs, Atype) and isinstance(rhs, Atype):    
             if lhs.size != rhs_literal.size: return False
             if not self.checkTypeOfSide(lhs.atype, rhs.atype, c, rhs.atype):
@@ -542,28 +550,47 @@ class StaticChecker(BaseVisitor):
 
     def visitCallStmt(self, ast,c):
         '''E.<method name>(<args>)'''
-        name = ast.method.name
-        self.checkAccess(ast, name, c, Method())
-        
-        '''E must be in class type'''
+
+        '''obj.method()'''
+        '''A::$method()'''
+
+        '''Access instance method with class error'''
+        for class_ in c:
+            if ast.obj.name == class_["name"]:
+                check, _ = self.checkExistingIdFunction(class_["array"][:-1], ast.obj.name)
+                if not check:
+                    '''obj is a class name'''
+                    check, sym = self.checkExistingIdFunction(class_["array"][:-1], ast.method.name)
+                    if check and sym.kind == "Method" and not self.IsStatic(sym.name):
+                        raise IllegalMemberAccess(ast)
+
+        '''E is not a className'''   
+        '''E must be in object in class type'''
         obj_ = self.visit(ast.obj,c) #=>Symbol
-        array_typ = [1,2,3,4,5,6]
+        array_typ = [1,2,3,4,6]
         if obj_.mtype in array_typ:
-            raise TypeMismatchInStatement(ast)
+            '''E is not in class type => int, float,...'''
+            raise TypeMismatchInExpression(ast)
+
+        '''Access static method with object error'''
+        for class_ in c:
+            if obj_.mtype == class_["name"]:
+                check, sym = self.checkExistingIdFunction([class_["array"][-1]], ast.method.name)
+                if check and sym.kind == "Method" and self.IsStatic(ast.method.name):
+                    raise IllegalMemberAccess(ast)
 
         '''Method must be void type'''
         name = ast.method.name
-        sym = self.checkAccess(ast, name, c, Method())
-        if sym.mtype.rettype != 6 : raise TypeMismatchInStatement(ast)
+        sym = self.checkAccess(ast, name, c, Method(), "Method")
+        if sym.mtype.rettype == 6 : raise TypeMismatchInExpression(ast)
 
         '''Check number of argument'''
         if len(ast.param) != len(sym.mtype.partype):
-            raise TypeMismatchInStatement(ast)
+            raise TypeMismatchInExpression(ast)
 
         for i in range(len(sym.mtype.partype)):
             if not self.checkTypeOfSide(sym.mtype.partype[i], self.visit(ast.param[i],c).mtype,c, [self.visit(param,c).mtype for param in ast.param]):
-                raise TypeMismatchInStatement(ast)                
-        return sym
+                raise TypeMismatchInExpression(ast)                
 
     def visitInstance(self, ast,c): pass
 
@@ -624,12 +651,11 @@ class StaticChecker(BaseVisitor):
     def innerCheckArray(self, ast,c, originals):
         for i in range (len(ast.value)-1):
             if isinstance(ast.value[i],ArrayLiteral) and isinstance(ast.value[i + 1],ArrayLiteral):
-                print("ArrayLiteral")
                 lhs = self.visitArray(ast.value[i],c, originals).mtype
                 rhs = self.visitArray(ast.value[i+1],c, originals).mtype
             else: 
                 lhs = self.visit(ast.value[i],c).mtype
-                rhs = self.visit(ast.value[i],c).mtype
+                rhs = self.visit(ast.value[i+1],c).mtype
 
             if isinstance(lhs, Atype) and isinstance(rhs, Atype):
                 if not self.recursiveCheckArrayType(lhs,rhs):
@@ -645,10 +671,3 @@ class StaticChecker(BaseVisitor):
     def visitArrayLiteral(self, ast,c): 
         self.innerCheckArray(ast,c, ast)
         return Symbol(mtype = Atype(size = len(ast.value), atype =self.visit(ast.value[0],c).mtype), kind= "ArrayLit")
-
-    def shallowCopy(self,c,env):
-        for i in c:
-            temp = []
-            for j in i["array"]:
-                temp.append(j.copy())
-            env.append({"array":temp, "name": i["name"], "parent": i["parent"]})
