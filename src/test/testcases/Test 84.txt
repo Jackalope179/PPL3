@@ -1,0 +1,21 @@
+
+                Class Program{
+                    main() { 
+                        Return;
+                    }
+                }
+                
+               Class Khang {
+                   Var $a: Int = 5;
+                   Var kk: Float;
+               }
+
+               Class C{
+                   Var a, b: Int = 4, 5;
+                   Var x: Khang;
+                   method(){
+                       a = x::$b + 12;
+                   }
+               }
+
+                

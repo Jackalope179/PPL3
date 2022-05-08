@@ -1,11 +1,18 @@
 
-        Class Program{
+        Class A{
             method(){
-                Val b:Int;
-                c = c + 1;
+                If(True){
+
+                } Elseif(1+1){
+
+                } Else{
+
+                }
             }
+        }
+        Class Program{
             main(){
                 Return;
             }
-        }     
+        }
         

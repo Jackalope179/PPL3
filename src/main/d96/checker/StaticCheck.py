@@ -402,14 +402,17 @@ class StaticChecker(BaseVisitor):
         '''A::$method()'''
 
         '''Access instance method with class error'''
-        for class_ in c:
-            if ast.obj.name == class_["name"]:
-                check, _ = self.checkMemberOfClass(class_["array"][:-1], ast.obj.name, "Val")
-                if not check:
-                    '''obj is a class name'''
-                    check, sym = self.checkExistingIdFunction(class_["array"][:-1], ast.method.name, "Method")
-                    if check and not self.IsStatic(sym.name):
-                        raise IllegalMemberAccess(ast)
+        if isinstance(ast.obj, Id):
+            for class_ in c:
+                if ast.obj.name == class_["name"]:
+                    check, _ = self.checkMemberOfClass(class_["array"][:-1], ast.obj.name, "Val")
+                    if not check:
+                        '''obj is a class name'''
+                        check, sym = self.checkExistingIdFunction(class_["array"][:-1], ast.method.name, "Method")
+                        if check and not self.IsStatic(sym.name):
+                            raise IllegalMemberAccess(ast)
+                        else:
+                            raise sym
 
         '''E is not a className'''   
         '''E must be in object in class type'''
@@ -449,18 +452,22 @@ class StaticChecker(BaseVisitor):
         if isinstance(ast.obj, Id):
             for class_ in c:
                 if ast.obj.name == class_["name"]:
+                    print(ast.obj.name)
                     check, _ = self.checkExistingIdFunction(class_["array"][:-1], ast.obj.name)
                     if not check:
                         '''obj is a class name'''
-                        check, sym = self.checkExistingIdFunction(class_["array"][:-1], ast.method.name)
-                        multability = sym.kind
+                        check, sym = self.checkExistingIdFunction([class_["array"][-1]], ast.fieldname.name)
+                        if check: multability = sym.kind
                         if check and sym.kind != "Method" and not self.IsStatic(sym.name):
                             raise IllegalMemberAccess(ast)
+                        else:
+                            return sym
+
 
 
         '''E is not a className'''   
         '''E must be in object in class type'''
-        obj_ = self.visit(ast.obj,c) #=>Symbol
+        obj_ = self.visit(ast.obj,c)  #=>Symbol
         array_typ = [1,2,3,4,6]
         if obj_.mtype in array_typ:
             '''E is not in class type => int, float,...'''
@@ -494,13 +501,28 @@ class StaticChecker(BaseVisitor):
 
         self.visit(ast.exp,c)
 
-    def visitIf(self, ast,c):
-        typ = self.visit(ast.expr, c)
-        if typ.mtype != 4:
-            raise TypeMismatchInStatement(ast)
+    def visitIf_Stmt(self, ast, c, original):
+        if_expr = self.visit(ast.expr,c)
+        '''If '''
+        if if_expr.mtype != 4:
+            raise TypeMismatchInStatement(original)
         self.visit(ast.thenStmt, c)
         if ast.elseStmt is not None:
-            self.visit(ast.elseStmt, c)
+            if isinstance(ast.elseStmt, If):
+                self.visitIf_Stmt(ast.elseStmt, c, original)
+            else:
+                self.visit(ast.elseStmt, c)
+
+    def visitIf(self, ast,c):
+        self.visitIf_Stmt(ast,c, ast)
+        # if_expr = self.visit(ast.expr,c)
+        # '''If '''
+        # if if_expr.mtype != 4:
+        #     raise TypeMismatchInStatement(ast)
+
+        # self.visit(ast.thenStmt, c)
+        # if ast.elseStmt is not None:
+        #     self.visit(ast.elseStmt, c)
 
     def visitFor(self, ast,c):
         '''Check type of scalar , exp1, exp2'''
@@ -555,14 +577,17 @@ class StaticChecker(BaseVisitor):
         '''A::$method()'''
 
         '''Access instance method with class error'''
-        for class_ in c:
-            if ast.obj.name == class_["name"]:
-                check, _ = self.checkExistingIdFunction(class_["array"][:-1], ast.obj.name)
-                if not check:
-                    '''obj is a class name'''
-                    check, sym = self.checkExistingIdFunction(class_["array"][:-1], ast.method.name)
-                    if check and sym.kind == "Method" and not self.IsStatic(sym.name):
-                        raise IllegalMemberAccess(ast)
+        if isinstance(ast.obj, Id):
+            for class_ in c:
+                if ast.obj.name == class_["name"]:
+                    check, _ = self.checkExistingIdFunction(class_["array"][:-1], ast.obj.name)
+                    if not check:
+                        '''obj is a class name'''
+                        check, sym = self.checkExistingIdFunction(class_["array"][:-1], ast.method.name)
+                        if check and sym.kind == "Method" and not self.IsStatic(sym.name):
+                            raise IllegalMemberAccess(ast)
+                        else:
+                            return sym
 
         '''E is not a className'''   
         '''E must be in object in class type'''

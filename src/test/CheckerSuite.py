@@ -3,6 +3,41 @@ from TestUtils import TestChecker
 from AST import *
 
 class CheckerSuite(unittest.TestCase):
+    def test0(self):
+        input = """
+        Class A{
+            method(){
+                If(True){
+
+                } Elseif(1+1){
+
+                } Else{
+
+                }
+            }
+        }
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        """
+        expect =""
+        self.assertTrue(TestChecker.test(input,expect,0))
+        
+    def test_20(self):
+        input = """
+        Class Program {
+            a(a: Int) {
+                Var b: Int = 5;
+                Val c: Float = 5.5e3;
+                b = 1 + c;
+            }
+            main(){}
+        }
+        """
+        expect = "Type Mismatch In Statement: AssignStmt(Id(b),BinaryOp(+,IntLit(1),Id(c)))"
+        self.assertTrue(TestChecker.test(input,expect,"Test_20"))
 
     # def test0(self):
     #     """Simple program: int main() {} """
@@ -732,25 +767,300 @@ class CheckerSuite(unittest.TestCase):
     #     expect = ""
     #     self.assertTrue(TestChecker.test(input, expect,18))
 
-    def test0(self):
-        input = """
-        Class A{
-            Constructor(a,b:Int; c:String; d:Float){
-                Return;
-            }
-        }
-        Class Program{
-            program(){
-                Val a:A = New A(1,2,"Hello", 1.5);
-            }
-            main(){
-                Return;
-            }
-        }
-        """
-        expect = ""
-        self.assertTrue(TestChecker.test(input, expect, 'Test 0'))
+    # def test0(self):
+    #     input = """
+    #     Class A{
+    #         Constructor(a,b:Int; c:String; d:Float){
+    #             Return;
+    #         }
+    #     }
+    #     Class Program{
+    #         program(){
+    #             Val a:A = New A(1,2,"Hello", 1.5);
+    #         }
+    #         main(){
+    #             Return;
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 0'))
+
+    # def test_attributeAccess_function_83(self):
+    #     input = """
+    #             Class Program{
+    #                 main() { 
+    #                     Return;
+    #                 }
+    #             }
+                             
+    #            Class Khang {
+    #                Var $a: Int = 5;
+    #                Var kk: Float;
+    #            }
+
+    #            Class C{
+    #                Var a, b: Int = 4, 5;
+    #                Var c: Float = 5.5;
+    #                Var x: Khang;
+    #                method(){
+    #                    a = Khang::$a;
+    #                    x.kk = c + 12.56 / 3;
+    #                    x::$a = 10;
+    #                }
+    #            }
+
+    #             """
+    #     expect = "Illegal Member Access: FieldAccess(Id(x),Id($a))"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 83'))
+
+    # def test_attributeAccess_function_84(self):
+    #     input = """
+    #             Class Program{
+    #                 main() { 
+    #                     Return;
+    #                 }
+    #             }
+                
+    #            Class Khang {
+    #                Var $a: Int = 5;
+    #                Var kk: Float;
+    #            }
+
+    #            Class C{
+    #                Var a, b: Int = 4, 5;
+    #                Var x: Khang;
+    #                method(){
+    #                    a = x::$b + 12;
+    #                }
+    #            }
+
+    #             """
+    #     expect = "Illegal Member Access: FieldAccess(Id(x),Id($b))"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 84'))
+
+    # def test_attributeAccess_function_85(self):
+    #     input = """
+    #             Class Program{
+    #                 main() { 
+    #                     Return;
+    #                 }
+    #             } 
+                
+    #            Class Khang {
+    #                Var $a: Int = 5;
+    #                Var kk: Float;
+    #            }
+
+    #            Class C{
+    #                Var a, b: Int = 4, 5;
+    #                Var x: Khang;
+    #                method(){
+    #                    a = Khang::$a + 12;
+    #                    b = Khang::$c + 12;
+    #                }
+    #            }
+
+    #             """
+    #     expect = "Undeclared Attribute: $c"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 85'))
+
+    # def test_attributeAccess_function_86(self):
+    #     input = """
+    #             Class Program{
+    #                 main() { 
+    #                     Return;
+    #                 }
+    #             }
+        
+    #            Class A {
+    #                Var x: Int = 10;
+    #            }
+
+    #            Class Khang {
+    #                Var $a: Int = 5;
+    #                Var kk: Float;
+    #            }
+
+    #            Class C{
+    #                Var a, b: Int = 4, 5;
+    #                Var x: Khang;
+    #                method(){
+    #                    a = B::$a + 12;
+    #                }
+    #            }
+
+    #             """
+    #     expect = "Undeclared Class: B"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 86'))
+
+    # def test_attributeAccess_function_87(self):
+    #     input = """
+    #             Class Program{
+    #                 main() { 
+    #                     Return;
+    #                 }
+    #             }
+        
+    #            Class A {
+    #                Var x: Int = 10;
+    #            }
+
+    #            Class Khang {
+    #                Var $a: Int = 5;
+    #                Var kk: Float;
+    #            }
+
+    #            Class C{
+    #                Var x, y: Int = 4, 5;
+    #                Var z: Khang;
+    #                method(){
+    #                    x = y::$a + 12;
+    #                }
+    #            }
+
+    #             """
+    #     expect = "Type Mismatch In Expression: FieldAccess(Id(y),Id($a))"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 87'))
 
 
-    
-    
+    # def test_attributeAccess_function_88(self):
+    #     input = """
+    #             Class Program{
+    #                 main() { 
+    #                     Return;
+    #                 }
+    #             }
+
+    #            Class Khang {
+    #                Var $a: Int = 5;
+    #                Var kk: Float;
+    #                Val ss: String = "Bug";
+    #            }
+
+    #            Class C{
+    #                Var x, y: Int = 4, 5;
+    #                Var z: Khang;
+    #                method(){
+    #                    x = x.kk + 12;
+    #                }
+    #            }
+
+    #             """
+    #     expect = "Type Mismatch In Expression: FieldAccess(Id(x),Id(kk))"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 88'))
+
+    # def test_attributeAccess_function_89(self):
+    #     input = """
+    #             Class Program{
+    #                 main() { 
+    #                     Return;
+    #                 }
+    #             }
+
+    #            Class Khang {
+    #                Var $a: Int = 5;
+    #                Var kk: Float;
+    #                Val ss: String = "Bug";
+    #            }
+
+    #            Class C{
+    #                Var x, y: Int = 4, 5;
+    #                Var z: Khang;
+    #                method(){
+    #                    x = (1+1).kk + 12;
+    #                }
+    #            }
+
+    #             """
+    #     expect = "Type Mismatch In Expression: FieldAccess(BinaryOp(+,IntLit(1),IntLit(1)),Id(kk))"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 89'))
+
+
+    # def test_attributeAccess_function_90(self):
+    #     input = """
+    #             Class Program{
+    #                 main() { 
+    #                     Return;
+    #                 }
+    #             }
+
+    #            Class Khang {
+    #                Var $a: Int = 5;
+    #                Var kk: Float;
+    #                Var ss: String = "Bug";
+    #            }
+
+    #            Class C{
+    #                Var x, y: Int = 4, 5;
+    #                Var tmp: Float;
+    #                method(){
+    #                     Var Khang: Khang;
+    #                     Self.tmp = Khang.kk + 12;
+    #                     Self.Khang.ss = "yeyeye";
+    #                     Self.tmp = Khang::$a + 10;
+    #                }
+    #            }
+
+    #             """
+    #     expect = "Illegal Member Access: FieldAccess(Id(Khang),Id($a))"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 90'))
+
+
+    # def test_attributeAccess_function_91(self):
+    #     input = """
+    #             Class Program{
+    #                 main() { 
+    #                     Return;
+    #                 }
+    #             }
+
+    #            Class Khang {
+    #                Var $a: Int = 5;
+    #                Var kk: Float;
+    #                Val ss: String = "Bug";
+    #            }
+
+    #            Class C{
+    #                Var x, y: Int = 4, 5;
+    #                Var tmp: Float;
+    #                Var h: Khang;
+
+    #                method(){
+    #                    Var obj: C;
+    #                    obj.x = Khang::$a + 10 / 5;
+    #                    obj.h.kk = 12 * 56;
+    #                    obj.h.ss = "yeye";
+    #                }
+    #            }
+
+    #             """
+    #     expect = "Cannot Assign To Constant: AssignStmt(FieldAccess(Id(h),Id(ss)),StringLit(yeye))"
+    #     self.assertTrue(TestChecker.test(input, expect, 'Test 91'))
+
+    # def test3(self):
+    #     input = """
+    #     Class A {
+    #         Val a: A = New A();
+    #     }
+    #     Class Program {
+    #         main() {
+    #             Val a: A = New A().a;
+    #             New A().a = 5;
+    #         }
+    #     }
+    #     """
+    #     expect = "Cannot Assign To Constant: AssignStmt(FieldAccess(NewExpr(Id('A'),[]),Id('a')),IntLit(5))"
+    #     self.assertTrue(TestChecker.test(input,expect,"Test_3"))
+
+    # def test_12(self):
+    #     input = """
+    #     Class Program {
+    #         Var a: Float;
+    #         main() {
+    #             Self.a();
+    #         }
+    #     }
+    #     """
+    #     expect = "Undeclared Method: a"
+    #     self.assertTrue(TestChecker.test(input,expect,"Test_12"))

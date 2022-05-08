@@ -1,1 +1,0 @@
-Program([ClassDecl(Id('A'),[AttributeDecl(Instance(),VarDecl(Id('x'),IntType()))]),ClassDecl(Id('B'),[AttributeDecl(Instance(),VarDecl(Id('x'),ClassType(Id('A')),NullLiteral()))]),ClassDecl(Id('Program'),[MethodDecl(Id('main'),Static(),[],Block([VarDecl(Id('x'),ClassType(Id('B')),NullLiteral()),AssignStmt(FieldAccess(FieldAccess(Id('x'),Id('a')),Id('x')),IntLit(5))]))])])

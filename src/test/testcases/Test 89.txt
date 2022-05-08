@@ -1,5 +1,5 @@
 
-        Class Program{
+                Class Program{
                     main() { 
                         Return;
                     }
@@ -8,18 +8,15 @@
                Class Khang {
                    Var $a: Int = 5;
                    Var kk: Float;
-                   Var ss: String = "Bug";
+                   Val ss: String = "Bug";
                }
 
                Class C{
                    Var x, y: Int = 4, 5;
-                   Var tmp: Float;
-                   Var Khang: Khang;
+                   Var z: Khang;
                    method(){
-                       Self.tmp = Self.Khang.kk + 12;
-                       Khang.ss = "yeyeye";
-                       Self.tmp = Self.Khang::$a + 10;
+                       x = (1+1).kk + 12;
                    }
                }
 
-        
+                

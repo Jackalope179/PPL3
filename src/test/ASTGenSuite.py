@@ -7,20 +7,29 @@ class ASTGenSuite(unittest.TestCase):
     def test1(self):
         """Simple program: int main() {} """
         input = """
-        Class A{
-            Var x:Int;
-        }
-
-        Class B{
-            Var x:A;
-        }
-
         Class Program{
-            main(){
-                Var x: B;
-                x.a.x = 5;
-            }
-        }
+                    main() { 
+                        Return;
+                    }
+                }
+
+               Class Khang {
+                   Var $a: Int = 5;
+                   Var kk: Float;
+                   Var ss: String = "Bug";
+               }
+
+               Class C{
+                   Var x, y: Int = 4, 5;
+                   Var tmp: Float;
+                   Var Khang: Khang;
+                   method(){
+                       Self.tmp = Self.Khang.kk + 12;
+                       Khang.ss = "yeyeye";
+                       Self.tmp = Self.Khang::$a + 10;
+                   }
+               }
+
         """
         expect = "Program([ClassDecl(Id(A),Id(B),[])])"
         self.assertTrue(TestAST.test(input,expect,1))

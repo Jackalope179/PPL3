@@ -1,0 +1,11 @@
+
+        Class A {
+            Val a: A = New A();
+        }
+        Class Program {
+            main() {
+                Val a: A = New A().a;
+                New A().a = 5;
+            }
+        }
+        

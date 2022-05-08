@@ -1,0 +1,10 @@
+
+        Class Program {
+            a(a: Int) {
+                Var b: Int = 5;
+                Val c: Float = 5.5e3;
+                b = 1 + c;
+            }
+            main(){}
+        }
+        

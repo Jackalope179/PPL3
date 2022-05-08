@@ -47,7 +47,7 @@ class Id(LHS):
     name: str
 
     def __str__(self):
-        return "Id('" + self.name + "')"
+        return "Id(" + self.name + ")"
 
 
 # used for binary expression
@@ -58,7 +58,7 @@ class BinaryOp(Expr):
     right: Expr
 
     def __str__(self):
-        return "BinaryOp('" + self.op + "'," + str(self.left) + "," + str(self.right) + ")"
+        return "BinaryOp(" + self.op + "," + str(self.left) + "," + str(self.right) + ")"
 
 # used for unary expression with orerand like !,+,-
 
@@ -69,7 +69,7 @@ class UnaryOp(Expr):
     body: Expr
 
     def __str__(self):
-        return "UnaryOp('" + self.op + "'," + str(self.body) + ")"
+        return "UnaryOp(" + self.op + "," + str(self.body) + ")"
 
 
 @dataclass
@@ -135,7 +135,7 @@ class StringLiteral(Literal):
     value: str
 
     def __str__(self):
-        return "StringLit('" + self.value + "')"
+        return "StringLit(" + self.value + ")"
 
 
 @dataclass
@@ -207,12 +207,12 @@ class For(Stmt):
 
 class Break(Stmt):
     def __str__(self):
-        return "Break()"
+        return "Break"
 
 
 class Continue(Stmt):
     def __str__(self):
-        return "Continue()"
+        return "Continue"
 
 
 @dataclass
@@ -286,14 +286,14 @@ class SIKind(AST):
 
 class Instance(SIKind):
     def __str__(self):
-        return "Instance()"
+        return "Instance"
 
 # used for static member
 
 
 class Static(SIKind):
     def __str__(self):
-        return "Static()"
+        return "Static"
 
 # used for a special or normal method declaration.
 # In the case of special method declaration, the name will be Id("Constructor") for Constructor or Id("Destructor") for Destructor.
@@ -308,7 +308,7 @@ class MethodDecl(MemDecl):
     body: Block
 
     def __str__(self):
-        return "MethodDecl(" + str(self.name) + ',' + str(self.kind) + ",[" + ','.join(str(i) for i in self.param) + "]," + str(self.body) + ")"
+        return "MethodDecl(" + str(self.name) + ',' + str(self.kind) + ",[" + ','.join(i.toParam() for i in self.param) + "]," + str(self.body) + ")"
 # used for mutable (variable) or immutable (constant) declaration
 
 
@@ -323,22 +323,22 @@ class AttributeDecl(MemDecl):
 
 class IntType(Type):
     def __str__(self):
-        return "IntType()"
+        return "IntType"
 
 
 class FloatType(Type):
     def __str__(self):
-        return "FloatType()"
+        return "FloatType"
 
 
 class BoolType(Type):
     def __str__(self):
-        return "BoolType()"
+        return "BoolType"
 
 
 class StringType(Type):
     def __str__(self):
-        return "StringType()"
+        return "StringType"
 
 
 @dataclass
@@ -360,7 +360,7 @@ class ClassType(Type):
 
 class VoidType(Type):
     def __str__(self):
-        return "VoidType()"
+        return "VoidType"
 
 
 # used for whole program
