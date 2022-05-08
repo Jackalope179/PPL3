@@ -1,5 +1,9 @@
 
         Class A{
+            Val a: Int = 5;
+            a(a,b,c:String; d:Float; e:Int){
+                Val g:A = New A();
+            }
             method(){
                 If(True){
 

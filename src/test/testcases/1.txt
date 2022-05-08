@@ -1,25 +1,40 @@
 
-        Class Program{
-                    main() { 
-                        Return;
+        Class A{
+            Var expr:Boolean = True;
+        }
+        Class Program {
+            Val expr:Boolean = True;
+            Var $expr:Boolean = False;
+            method(){
+                Val a:Boolean = True;
+                Val c:Boolean = True;
+                Val obj:A = New A();
+                Var d: Float = 2.0;
+                If(a){
+                    Val obj:A = New A();
+                    {
+                        Var obj:A= New A();
+                        obj.expr = False;
+                    }
+                } Elseif (obj.expr){
+                    d = d+1;
+                    
+                } Elseif(Self.expr){
+                    d = d + 5.6e-2;
+                } Elseif(Program::$expr){
+                    d = d +5;
+                } Else{
+                    If (obj.expr){
+
+                    } Else{
+                        d = d + 1;
+                        d = d * "Hello world";
                     }
                 }
 
-               Class Khang {
-                   Var $a: Int = 5;
-                   Var kk: Float;
-                   Var ss: String = "Bug";
-               }
-
-               Class C{
-                   Var x, y: Int = 4, 5;
-                   Var tmp: Float;
-                   Var Khang: Khang;
-                   method(){
-                       Self.tmp = Self.Khang.kk + 12;
-                       Khang.ss = "yeyeye";
-                       Self.tmp = Self.Khang::$a + 10;
-                   }
-               }
-
+            }
+            main(){
+                Return;
+            }
+        }
         

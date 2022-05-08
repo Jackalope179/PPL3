@@ -1,0 +1,12 @@
+
+        Class Program {
+            Var a: Array[Int, 4];
+            setArr(a: Array[Float, 4]) {
+                Self.a = a;
+                Return;
+            }
+            main(){
+                Self.setArr(Array(1.2, 2.3, 3.4, 4.5));
+            }
+        }
+        

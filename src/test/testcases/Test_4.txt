@@ -1,8 +1,7 @@
 
         Class Program {
-            Val a: Float = 5;
             main() {
-                Self.a();
+                Val a: Int = 5.5;
             }
         }
         

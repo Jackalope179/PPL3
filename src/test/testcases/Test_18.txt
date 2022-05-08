@@ -1,0 +1,6 @@
+
+        Class Program {
+            a(a: Int; a: Float) {}
+            main(){}
+        }
+        

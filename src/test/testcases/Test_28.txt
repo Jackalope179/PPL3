@@ -1,0 +1,11 @@
+
+        Class Program {
+            func(a, b: Float) {
+                Return b + a;
+            }
+            main(){
+                Var x: Int;
+                x = Self.func(5, 5);
+            }
+        }
+        

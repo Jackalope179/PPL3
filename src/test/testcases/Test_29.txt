@@ -1,0 +1,23 @@
+
+        Class Shape {
+            Var width: Float;
+            Var height: Float;
+
+            Constructor(width, height: Float) {
+                Self.width = width;
+                Self.height = height;
+            }
+
+            calArea() {
+                Return Self.width * Self.height;
+            }
+        }
+        
+        Class Program {
+            main(){
+                Var shape: Shape = New Shape(5, 5.5);
+                Var res: Int;
+                res = shape.calArea();
+            }
+        }
+        

@@ -1,0 +1,10 @@
+
+        Class Program {
+            Var a: Float;
+            main() {
+                Var a: Int;
+                Self.a = 10;
+                a = 5 + 5.5;
+            }
+        }
+        

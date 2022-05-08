@@ -1,15 +1,47 @@
 
-        Class A{
+        Class D{
             method(){
-                Val a:String;
-                Var b:String;
-                ##Val a:A = New A();##
-                b = a.att;
+                Return 1;
+            }
+            $static(){
+                Val a: D = New D();
+                Return a;
+            }
+        }
+        Class A:D {
+            Val $a:Int= 5;
+            Var b: Float;
+        }
+
+        Class B:A{
+            Var $a:Int = 1;
+            getName(){
+                Return "Hello world";
+            }
+            $staticMethod(){
+                Return "Hello";
+            }
+            program(a,b,c:Float; e:String; f:Boolean){
+                Return;
             }
         }
         Class Program{
+            getName(){
+                Var a:B = New B();
+                Var b:String;
+                Var c:Int = 1;
+                b = B::$staticMethod();
+                Var B:Float;
+                B::$a = 1;
+                a.program(1,2.0,3, "Hello", True);
+                b = a.getName();
+            }
             main(){
                 Return;
             }
+        }
+
+        Class E:F{
+
         }
         

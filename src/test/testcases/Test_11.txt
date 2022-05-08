@@ -1,8 +1,9 @@
 
+        Class B : A{}
         Class Program {
-            Val a: Float = 5;
+            Var a: Float;
             main() {
-                Self.a();
+                Self.a = 10;
             }
         }
         

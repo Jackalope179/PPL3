@@ -1,0 +1,10 @@
+
+        Class Program {
+            a(a: Int) {
+                Return a;
+            }
+            main(){
+                Self.a(10.5);
+            }
+        }
+        

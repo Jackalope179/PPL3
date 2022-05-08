@@ -1,0 +1,8 @@
+
+        Class Program {}
+        Class Program {
+            a(a: Int) {
+            }
+            main(){}
+        }
+        

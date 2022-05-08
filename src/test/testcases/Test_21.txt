@@ -1,0 +1,9 @@
+
+        Class Program {
+            a(a: Int) {
+                Var b: String = "Hello ";
+                b = b + a;
+            }
+            main(){}
+        }
+        

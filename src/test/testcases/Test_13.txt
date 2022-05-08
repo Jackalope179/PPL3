@@ -2,7 +2,8 @@
         Class Program {
             Val a: Float = 5;
             main() {
-                Self.a();
+                Var a: Program;
+                a.a = 10;
             }
         }
         
