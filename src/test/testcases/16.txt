@@ -1,0 +1,10 @@
+
+        Class A{}
+        Class B:A{}
+        Class C:D{}
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        

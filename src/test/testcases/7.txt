@@ -1,12 +1,26 @@
 
-        Class A{
+        Class B{
+        }
+        Class A:B{
             Var a: Float;
             Var b: Int;
             program(){
-                Self.b = Self.a;
+                Self.a = Self.b;
+            }
+            method(a:B){
+
+            }
+            $method(b:A){
+
             }
         }
         Class Program{
+            method(){
+                Var b:B = New B();
+                (New A()).method(b);
+                A::$method(New A());
+                (New A()).method(New A());
+            }
             main(){
                 Return;
             }

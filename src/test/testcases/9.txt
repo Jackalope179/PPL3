@@ -1,1 +1,18 @@
-Program([ClassDecl(Id('A'),[MethodDecl(Instance(),Id('getName'),[],Block([Block([ConstDecl(Id('a'),IntType(),None)]),Block([VarDecl(Id('a'),StringType())])]))])])
+
+        Class A{
+            Val a: Int = 1;
+            Var b: String = "Hello";
+            method(){
+                Val a:String ="Hello";
+                Var b:A;
+
+            }
+            Var c: String;
+        }
+        Class B{
+            Val a: Int = 5;
+        }
+        Class Program{
+            main(){}
+        }
+        

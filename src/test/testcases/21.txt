@@ -1,0 +1,13 @@
+
+        Class A{
+            Val a:Int = 5;
+            Val b:Float = 6;
+            Val c:String = "Hello";
+            Val e:Float = Self.c + Self.a + Self.b;
+        }
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        

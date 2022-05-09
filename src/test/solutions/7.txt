@@ -1,1 +1,1 @@
-Type Mismatch In Statement: AssignStmt(FieldAccess(Self(),Id('b')),FieldAccess(Self(),Id('a')))
+Type Mismatch In Statement: Call(NewExpr(Id(A),[]),Id(method),[NewExpr(Id(A),[])])

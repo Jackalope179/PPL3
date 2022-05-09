@@ -148,68 +148,84 @@ class CheckerSuite(unittest.TestCase):
     #     expect = "Undeclared Class: F"
     #     self.assertTrue(TestChecker.test(input,expect,3))
 
-    def test4(self):
-        input = """
-        Class A{
-            Var $static:Float = 1;
-            Val $obj:A = New A();
-            Val obj:A = New A();
-            Var a: Int = 5;
-            Var b: Int = 1 + A::$obj.a;
-            Var c: Int = 1 + Self.obj.a;
-            method(){
-                Val a: Int = 5;
-                Var b: Int = 1 + a;
-                Var A:A;
-                A = New A();
-                A.a = 1;
-                A::$static = 6;
-            }
-        }
-        Class Program{
-            main(){
-                Return;
-            }
-        }
-        Class B{
-
-        }
-        """
-        expect = "[]"
-        self.assertTrue(TestChecker.test(input,expect,4))
-
     # def test4(self):
     #     input = """
     #     Class A{
+    #         Var $static:Float = 1;
+    #         Val $obj:A = New A();
+    #         Val obj:A = New A();
+    #         Var a: Int = 5;
+    #         Var b: Int = 1 + A::$obj.a;
+    #         Var c: Int = 1 + Self.obj.a;
     #         method(){
-    #             Var i :Int;
-    #             Foreach(i In 1 .. 100){
-    #                 Break;
-    #             }
+    #             Val a: Int = 5;
+    #             Var b: Int = 1 + a;
+    #             Var A:A;
+    #             A = New A();
+    #             A.a = 1;
+    #             A::$static = 6;
     #         }
     #     }
     #     Class Program{
     #         main(){
-    #             Var i :Int;
-    #             Foreach(i In 1 .. 100){
-    #                 Break;
-    #                 Continue;
-    #             }
     #             Return;
     #         }
     #     }
+    #     Class B{
+
+    #     }
     #     """
-    #     expect = ""
+    #     expect = "[]"
     #     self.assertTrue(TestChecker.test(input,expect,4))
 
     # def test5(self):
     #     input = """
     #     Class A{
+    #         Val $atr: Int = 1;
+    #         Var $atrr: String = "Hello";
+    #         Val a:Float = 2;
+    #         Var b: Boolean = True;
+    #         $atr(){
+    #             Return 5;
+    #         }
+    #         a(){
+    #             Return 2.0;
+    #         }
     #         method(){
-    #             Var i :Int;
-    #             Foreach(i In 1 .. 100){
-    #                 Continue;
-    #             }
+    #             Val A:A = New A();
+    #             Var cal: Int = 1;
+    #             Var f:Float = 5.6;
+    #             A::$atrr = "Hello wordl" +. A::$atrr;
+    #             A.b = False;
+    #             cal = A::$atr() + 5;
+    #             f = A.a() + 3.0;
+    #             Return cal;
+    #         }
+    #     }
+    #     Class Program{
+    #         main(){
+    #             Return;
+    #         }
+    #     }
+    #     """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input,expect,5))
+
+    # def test6(self):
+    #     input = """
+    #     Class B{
+    #         Var att:String;
+    #         Constructor(){
+    #             Return;
+    #         }
+    #     }
+    #     Class A:B{
+    #         method(){
+    #             Val a:Array[Int,2] = Array(1,2);
+    #             Var b:Array[Array[Float,2],2] = Array(Array(1.0, 2.0), Array(3.5, 3.6));
+    #             Var c:Array[Array[Float,2],2] = Array(Array(1, 2), Array(3, 3));
+    #             Var obj_b:B = New B();
+    #             Var obj:B;
     #         }
     #     }
     #     Class Program{
@@ -221,69 +237,100 @@ class CheckerSuite(unittest.TestCase):
     #             }
     #             Return;
     #         }
+    #         Constructor(a,b,c:Int; d:String){
+    #             Return "Hello";
+    #             Continue;
+    #         }
     #     }
     #     """
     #     expect = ""
-    #     self.assertTrue(TestChecker.test(input,expect,5))
-
-    # def test0(self):
-    #     input = """
-    #     Class A{
-    #         Var $a: Int; 
-    #         Var b: Int;
-    #         getName(){}
-
-    #         method(){
-    #             Val A: A = New A();
-    #             A::$a = 1;
-    #         }
-        
-    #     }
-    #     Class Program{
-    #         main(){
-    #             Return;
-    #         }
-    #     }
-    #     """
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input,expect,5))
-
-
-    # def test0(self):
-    #     input = """
-    #     Class A{
-    #         ##Var a: Array[Float, 5] = Array(1, 2, 3, 4, 5);
-    #         Val b: Array[Float, 5] = Array(1, 2, 3, 4, 1);##
-
-    #         method(){
-    #             ##Val b: Array[Float, 5] = Array(1, 2, 3, 4, 1);
-    #             Var a: Array[Int, 5] = Array(1.0, 2.0, 3.6, 4.5, 1.2);
-    #             Val c: Array[Array[Int,2],2] = Array(Array(1.0,2.0),Array(3,4));##
-    #             Var a1: Int;
-    #             Var a2: Int;
-    #             Var a: Array[Array[Int,2],2] = Array(Array(a1,a2), Array(1,2));
-    #         }
-    #     }
-        
-    #     Class Program{
-    #         main(){
-    #             Return;
-    #         }
-    #     }
-    #     """
-    #     expect = """"""
     #     self.assertTrue(TestChecker.test(input,expect,6))
 
     # def test7(self):
     #     input = """
+    #     Class B{
+    #         Contructor(){
+    #             Return;
+    #         }
+    #     }
     #     Class A{
+    #         Var $a: Int; 
+    #         Var b: Int;
+    #         getName(){}
+    #         Constructor(a,b,c:Int; d:String; e:Array[Float,2]; obj:B){
+    #             Return;
+    #         }
+    #         method(){
+    #             Val A: A = New A(1,2,3,"Hello", Array(1.0, 2.0), New B());
+    #             A::$a = 1;
+    #         }
+    #     }
+
+    #     Class Program{
+    #         Var a:Array[Array[Int,2],2];
+    #         Val c:Boolean = True;
+    #         method(a:Array[Array[Int,2],2]; b:A; c:Boolean){
+    #             Return 123;
+    #         }
+    #         main(){
+    #             Val b:Int = 5;
+    #             Var c:Int = 6;
+    #             Val a:A = New A(b,c,6, "Hello World", Array(2,3), New B());
+    #             Var d: Float = Self.method(Self.a, a, Self.c);
+    #             Var obj:A;
+    #             Return;
+    #         }
+    #     }
+    #     """
+    #     expect = """"""
+    #     self.assertTrue(TestChecker.test(input,expect,7))
+
+
+    # def test8(self):
+    #     input = """
+    #     Class B{
+    #         Var c:Int = 6;
+
+    #     }
+    #     Class A:B{
+    #        Var a:Int;
+    #     }
+        
+    #     Class Program{
+    #         main(){
+    #             Var a:A;
+    #             a.a = 1;
+    #             Self.c = 5;
+    #         }
+    #     }
+    #     """
+    #     expect = """"""
+    #     self.assertTrue(TestChecker.test(input,expect,8))
+
+    # def test7(self):
+    #     input = """
+    #     Class B{
+    #     }
+    #     Class A:B{
     #         Var a: Float;
     #         Var b: Int;
     #         program(){
-    #             Self.b = Self.a;
+    #             Self.a = Self.b;
+    #         }
+    #         method(a:B){
+
+    #         }
+    #         $method(b:A){
+
     #         }
     #     }
     #     Class Program{
+    #         method(){
+    #             Var b:B = New B();
+    #             (New A()).method(b);
+    #             A::$method(New A());
+    #             (New A()).method(New A());
+    #         }
     #         main(){
     #             Return;
     #         }
@@ -295,11 +342,11 @@ class CheckerSuite(unittest.TestCase):
     #     self.assertTrue(TestChecker.test(input,expect,7))
 
 
-    # def test0(self):
+    # def test8(self):
     #     input ="""
     #     Class A{
     #         Var $a: Int;
-    #         Val $b: String;
+    #         Val $b: String ="Hello";
     #         Val a: String = "Hello";
     #         Var b: Int = 1;
     #         Var c: Int = 3;
@@ -326,9 +373,9 @@ class CheckerSuite(unittest.TestCase):
     #     }
 
     #     Class D: B{
-    #         Val $d:Float;
-    #         Val e: String;
-    #         Val obj3: Int;
+    #         Val $d:Float = 12.6;
+    #         Val e: String ="Hello";
+    #         Val obj3: Int = 12;
     #         getName(a,b,c: Int){
     #             c = c + 1;
     #             Val obj:D = New D();
@@ -344,7 +391,7 @@ class CheckerSuite(unittest.TestCase):
     #         }
     #     }
     #     Class E{
-    #         Val e: Int;
+    #         Val e: Int = 5;
     #     }
     #     Class Program{
     #         main(){
@@ -359,43 +406,43 @@ class CheckerSuite(unittest.TestCase):
     #         }
     #     }
     #     """
-    #     expect =""
-    #     self.assertTrue(TestChecker.test(input,expect,0))
+    #     expect ="Cannot Assign To Constant: AssignStmt(FieldAccess(Id(obj),Id(d)),BinaryOp(+,FieldAccess(Id(obj),Id(d)),IntLit(1)))"
+    #     self.assertTrue(TestChecker.test(input,expect,8))
 
 
 
-    # def test0(self):
+    # def test9(self):
     #     input ="""
     #     Class A{
-    #         Val a: Int;
-    #         Var b: String;
+    #         Val a: Int = 1;
+    #         Var b: String = "Hello";
     #         method(){
-    #             Val a:String;
+    #             Val a:String ="Hello";
     #             Var b:A;
 
     #         }
     #         Var c: String;
     #     }
     #     Class B{
-    #         Val a: Int;
+    #         Val a: Int = 5;
     #     }
     #     Class Program{
     #         main(){}
     #     }
     #     """
-    #     expect =""""""
-    #     self.assertTrue(TestChecker.test(input,expect,1))
+    #     expect ="""[]"""
+    #     self.assertTrue(TestChecker.test(input,expect,9))
 
-    # def test1(self):
+    # def test10(self):
     #     input ="""
     #     Class C{
-    #         Val c: Int;
+    #         Val c: Int = 56;
     #     }
     #     Class A:C{
-    #         Val a: Int;
+    #         Val a: Int = 5;
     #         Var b: String;
     #         method(){
-    #             Val a:String;
+    #             Val a:String ="Hello";
     #             Var b:A;
     #             c = c + 1;
     #             Val d: A = New C();
@@ -414,129 +461,100 @@ class CheckerSuite(unittest.TestCase):
     #         }
     #     }
     #     """
-    #     expect ="""Type Mismatch In Constant Declaration: ConstDecl(Id('d'),ClassType(Id('A')),NewExpr(Id('C'),[]))"""
-    #     self.assertTrue(TestChecker.test(input,expect,1))
+    #     expect ="""Undeclared Identifier: c"""
+    #     self.assertTrue(TestChecker.test(input,expect,10))
 
-    # def test2(self):
+    # def test11(self):
     #     input ="""
-    #     Class C{
-    #         Val c: Int;
-    #         Val g,h,i, j, f,w: Int;
-    #         Var k, l, m: Boolean;
-    #         method(){
-    #             Val object: C = New C();
+    #     Class A:B{
 
-    #             object.c = 1;
-    #             object.g = 1;
-    #             object.w = 1;
-                
-    #         }
     #     }
-    #     Class A:C{
-    #         Val a: Int;
-    #         Var b: String;
-    #         method(){
-    #             Val obj:A = New A();
-    #             obj.att = 1;
-    #             Val a:String;
-    #             Var b:A;
-    #             c = c + 1;
-    #             Val d: C = New A();
-    #             g  = g * 2;
-    #             h  = h % 2;
-    #             i  = i + 2;
-    #             w= w + 1;
-    #         }
-    #         Var d: Int;
-    #     }
-    #     Class B:C{
-    #         Val a: Int;
-    #         method(a,b,c:A; d:Int; e:String){
-    #             Val f: C = New A();
-    #             m = !m ;
-    #         }
-    #     }
-    #     Class D:B{
-    #         getName(){
-    #             m = g + 1;
-    #             Val a:B = New D();
-    #             c = g * h + i /j - f;
-    #         }
+    #     Class B{
+
     #     }
     #     Class Program{
     #         main(){
-    #             Val test:C = New B();
-    #             Val test_:C = New D();
-    #             Return ;
+
     #         }
     #     }
     #     """
-    #     expect =""
-    #     self.assertTrue(TestChecker.test(input,expect,2))
+    #     expect ="Undeclared Class: B"
+    #     self.assertTrue(TestChecker.test(input,expect,11))
 
-    # def test1(self):
+    # def test12(self):
     #     input ="""
     #     Class A{
-    #         Val a:Int;
-    #         Var b:String;
+    #         Val a:Int =  5;
+    #         Var b:String = "Hello";
     #         getName(){
     #             Val obj: A = New A();
     #             obj.b = obj.a + 1; 
     #         }
     #     }
     #     Class Program{
-    #         main(){
+    #         main(){}
+    #     }
+    #     """
+    #     expect ="Type Mismatch In Statement: AssignStmt(FieldAccess(Id(obj),Id(b)),BinaryOp(+,FieldAccess(Id(obj),Id(a)),IntLit(1)))"
+    #     self.assertTrue(TestChecker.test(input,expect,12))
+
+    # def test13(self):  
+    #     input = """
+    #     Class A{
+    #         Contructor(a,b,c:Int){
     #             Return;
     #         }
-    #     }
-    #     """
-    #     expect =""
-    #     self.assertTrue(TestChecker.test(input,expect,1))
-
-    # def test1(self):  
-    #     input = """
-    #     Class A{
-    #         Val a:String;
-    #         getName(a:String; b: Int; d: Boolean ){
-    #             Val e:String;
+    #         Destructor(){
+    #             Return "Hello";
     #         }
     #     }
-    #     Class A{
+    #     Class Program{
+    #         main(){
 
+    #         }
     #     }
     #     """
-    #     expect = "Redeclared Class: A"
-    #     self.assertTrue(TestChecker.test(input,expect,1))
+    #     expect = "Type Mismatch In Statement: Return(StringLit(Hello))"
+    #     self.assertTrue(TestChecker.test(input,expect,13))
     
-    # def test2(self):
+    # def test14(self):
     #     input = """
-    #     Class A{
-    #         getName(a:String; b: Int; d: Boolean ){}
-    #         Val a:String;
-    #         Var b:Int;
-    #         getName(){}
+    #      Class A{
+    #         Contructor(a,b,c:Int){
+    #             Return "Hello world";
+    #         }
+    #         Destructor(){
+    #             Return "Hello";
+    #         }
+    #     }
+    #     Class Program{
+    #         main(){
+
+    #         }
     #     }
     #     """
-    #     expect = "Redeclared Method: getName"
-    #     self.assertTrue(TestChecker.test(input,expect,2))
+    #     expect = "Type Mismatch In Statement: Return(StringLit(Hello))"
+    #     self.assertTrue(TestChecker.test(input,expect,14))
 
-    # def test12(self):
+    # def test15(self):
     #     input ="""
     #     Class A{
+    #         Val b: Int = 5;
     #         getName(a:String; b: Int; d: Boolean ){
-    #             Val e:String;
+    #             Val e:String ="Hello";
+    #             Var g: Int = 5;
     #             {
-    #                 Val a: Int;
+    #                 Val a: Int = 5;
     #                 Var e: Boolean;
     #             }
     #             {
     #                 Var a: String;
-    #                 Val b: Boolean;
+    #                 Val b: Boolean = True;
     #                 {
-    #                     Val c: Int;
-    #                     Var d:Boolean;
+    #                     Val c:Int = 5;
+    #                     Var d:Boolean = True;
     #                     {
-    #                         Val b:Int;
+    #                         Val b:Int = Self.b;
     #                         Var b:String;
     #                     }
     #                 }
@@ -547,18 +565,284 @@ class CheckerSuite(unittest.TestCase):
     #     }
     #     """
     #     expect = "Redeclared Variable: b"
-    #     self.assertTrue(TestChecker.test(input,expect,12))
+    #     self.assertTrue(TestChecker.test(input,expect,15))
 
-    # def test13(self):
+    # def test16(self):
     #     input ="""
     #     Class A{}
     #     Class B:A{}
     #     Class C:D{}
+    #     Class Program{
+    #         main(){
+    #             Return;
+    #         }
+    #     }
     #     """
     #     expect = "Undeclared Class: D"
-    #     self.assertTrue(TestChecker.test(input,expect,13))
+    #     self.assertTrue(TestChecker.test(input,expect,16))
 
-    # def test14(self):
+    # def test17(self):
+    #     input ="""
+    #     Class A{
+            
+    #     }
+    #     Class Program{
+    #         Val a:Int = 5;
+    #         main(){
+    #             {
+    #                 Var a:Int = 1;
+    #                 a = a + 1;
+    #                 {
+    #                     Var a:Float;
+    #                     {
+    #                         a = a * 5;
+    #                         Var b:Boolean = 1 > 5;
+
+    #                     }
+    #                     {
+    #                         a = a * 5.0 + 1 / 2 *5.0;
+    #                         Val b:Int = Self.a + 1 + a;
+    #                     }
+    #                 }
+    #             }
+    #         }
+    #     }
+    #     """
+    #     expect = "Illegal Constant Expression: BinaryOp(+,BinaryOp(+,FieldAccess(Self(),Id(a)),IntLit(1)),Id(a))"
+    #     self.assertTrue(TestChecker.test(input,expect,17))
+
+    # def test18(self):
+    #     input ="""
+    #     Class A{
+    #         Var a:Int;
+    #         Val e:Int = 5;
+    #         Var b:Int = Self.a + 1;
+    #         Val c:Int = Self.e + b;
+    #     }
+    #     Class Program{
+    #         main(){}
+    #     }
+    #     """
+    #     expect = "Undeclared Identifier: b"
+    #     self.assertTrue(TestChecker.test(input,expect,18))
+
+    # def test19(self):
+    #     input ="""
+    #     Class A{
+    #         Val a:Int = 5;
+            
+    #         getName(a,b:String; c:Int){
+    #             Val e:String ="Hello";
+    #             Val d:A = New X();
+
+    #         }
+    #     }
+    #     Class Program{
+    #         main(){
+
+    #         }
+    #     }
+    #     """
+    #     expect = "Undeclared Class: X"
+    #     self.assertTrue(TestChecker.test(input,expect,19))
+
+    # def test20(self):
+    #     input ="""
+    #     Class B{
+    #         Val c:String = "Hlo";
+    #         Var $e:String ="Hello";
+    #     }
+    #     Class A:B{
+    #         Val a:Int = 5;
+    #         Var a_ :String = "Hello";
+    #         getName(a,b:String; c:Int){
+    #             Val e:String ="Herllo";
+    #             a = "Hello";
+    #             c = Self.a;
+    #             b = (New B()).c;
+    #             b = (B::$e +. Self.a_) +. (New B()).c;
+    #             Val d:B = New A();
+
+    #         }
+    #     }
+    #     Class Program{
+    #         main(){
+
+    #         }
+    #     }
+    #     """
+    #     expect = "Type Mismatch In Constant Declaration: ConstDecl(Id(d),ClassType(Id(B)),NewExpr(Id(A),[]))"
+    #     self.assertTrue(TestChecker.test(input,expect,20))
+
+    # def test21(self):
+    #     input ="""
+    #     Class A{
+    #         Val a:Int = 5;
+    #         Val b:Float = 6;
+    #         Val c:String = "Hello";
+    #         Val e:Float = Self.c + Self.a + Self.b;
+    #     }
+    #     Class Program{
+    #         main(){
+    #             Return;
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,21))
+
+    # def test22(self):
+    #     input ="""
+    #     Class C{
+    #         Var a:Int= 5;
+    #         Val d: Int = 5;
+    #         Val c:Int = 5;
+    #     }
+    #     Class B{
+    #         Var a: C = New C();
+    #         Val $b:Int = 5;
+    #         Val d:C = New C();
+    #     }
+    #     Class A{
+    #         Val a:Int = 5;
+    #         Val d:B = New B();
+            
+    #         getName(a,b:String; c:Int){
+    #             Val f:Int = Self.a + B::$b;
+    #             Val g:Int = Self.a + B::$b + (New C()).c;
+    #             c = Self.d.d.d + c;
+    #         }
+    #     }
+    #     Class Program{
+    #         main(){
+
+    #         }
+    #     }
+    #     """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input,expect,22))
+
+    # def test23(self):
+    #     input ="""
+    #     Class A{
+    #         Val a:Int = 5;
+    #         getMethod(b:Array[Int,2 ]; a: A){
+    #             Return 1;
+    #         }
+    #         getMethod_(){
+    #             Return 2.0;
+    #         }
+    #         getName(){
+    #             Val a: A = New A();
+    #             Var f:Float = Self.getMethod(Array(1,2), a) + Self.getMethod_();
+
+    #             Var arr: Array[Int,5];
+    #             Var b:Int = arr[1];
+                
+    #             Var arr_:Array[String, 5];
+    #             Var c_: Int = arr_[1];
+
+    #             Val d:X = New A();
+
+    #         }
+    #     }
+    #     Class Program{
+    #         main(){
+    #             Return;
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,23))
+
+    # def test24(self):
+    #     input ="""
+    #     Class A{
+    #         Var a:Int;
+            
+    #         getName(a,b:Int; c:Int){
+    #             Var f:Int;
+    #             Foreach(f In b .. c){
+    #                 Val a:Boolean = True;
+    #                 If(1 >= 5){
+    #                     Self.a = 7;
+    #                 } Elseif(a){
+    #                     a.b = 5;
+    #                 }
+    #             }
+
+    #         }
+    #     }
+    #     Class Program{
+    #         main(){
+    #             Return;
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,24))
+
+    def test25(self):
+        input ="""
+        Class A{
+            Val a:Int;
+            
+            getName(a,b:String; c:Int){
+                Val e:String;
+                Val d:A = New X();
+
+            }
+        }
+        """
+        expect = ""
+        self.assertTrue(TestChecker.test(input,expect,25))
+
+    def test26(self):
+        input ="""
+        Class A{
+            Val a:Int;
+            
+            getName(a,b:String; c:Int){
+                Val e:String;
+                Val d:A = New X();
+
+            }
+        }
+        """
+        expect = ""
+        self.assertTrue(TestChecker.test(input,expect,26))
+
+    def test27(self):
+        input ="""
+        Class A{
+            Val a:Int;
+            
+            getName(a,b:String; c:Int){
+                Val e:String;
+                Val d:A = New X();
+
+            }
+        }
+        """
+        expect = ""
+        self.assertTrue(TestChecker.test(input,expect,27))
+
+    def test28(self):
+        input ="""
+        Class A{
+            Val a:Int;
+            
+            getName(a,b:String; c:Int){
+                Val e:String;
+                Val d:A = New X();
+
+            }
+        }
+        """
+        expect = ""
+        self.assertTrue(TestChecker.test(input,expect,28))
+
+    # def test29(self):
     #     input ="""
     #     Class A{
     #         Val a:Int;
@@ -571,7 +855,112 @@ class CheckerSuite(unittest.TestCase):
     #     }
     #     """
     #     expect = ""
-    #     self.assertTrue(TestChecker.test(input,expect,14))
+    #     self.assertTrue(TestChecker.test(input,expect,29))
+
+    # def test30(self):
+    #     input ="""
+    #     Class A{
+    #         Val a:Int;
+            
+    #         getName(a,b:String; c:Int){
+    #             Val e:String;
+    #             Val d:A = New X();
+
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,30))
+
+    # def test31(self):
+    #     input ="""
+    #     Class A{
+    #         Val a:Int;
+            
+    #         getName(a,b:String; c:Int){
+    #             Val e:String;
+    #             Val d:A = New X();
+
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,31))
+
+    # def test30(self):
+    #     input ="""
+    #     Class A{
+    #         Val a:Int;
+            
+    #         getName(a,b:String; c:Int){
+    #             Val e:String;
+    #             Val d:A = New X();
+
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,30))
+
+    # def test31(self):
+    #     input ="""
+    #     Class A{
+    #         Val a:Int;
+            
+    #         getName(a,b:String; c:Int){
+    #             Val e:String;
+    #             Val d:A = New X();
+
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,31))
+
+    # def test32(self):
+    #     input ="""
+    #     Class A{
+    #         Val a:Int;
+            
+    #         getName(a,b:String; c:Int){
+    #             Val e:String;
+    #             Val d:A = New X();
+
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,32))
+
+    # def test33(self):
+    #     input ="""
+    #     Class A{
+    #         Val a:Int;
+            
+    #         getName(a,b:String; c:Int){
+    #             Val e:String;
+    #             Val d:A = New X();
+
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,33))
+
+    # def test34(self):
+    #     input ="""
+    #     Class A{
+    #         Val a:Int;
+            
+    #         getName(a,b:String; c:Int){
+    #             Val e:String;
+    #             Val d:A = New X();
+
+    #         }
+    #     }
+    #     """
+    #     expect = ""
+    #     self.assertTrue(TestChecker.test(input,expect,34))
 
     # def test15(self):
     #     input ="""

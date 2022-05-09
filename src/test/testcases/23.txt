@@ -1,0 +1,29 @@
+
+        Class A{
+            Val a:Int = 5;
+            getMethod(b:Array[Int,2 ]; a: A){
+                Return 1;
+            }
+            getMethod_(){
+                Return 2.0;
+            }
+            getName(){
+                Val a: A = New A();
+                Var f:Float = Self.getMethod(Array(1,2), a) + Self.getMethod_();
+
+                Var arr: Array[Int,5];
+                Var b:Int = arr[1];
+                
+                Var arr_:Array[String, 5];
+                Var c_: Int = arr_[1];
+
+                Val d:X = New A();
+
+            }
+        }
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        

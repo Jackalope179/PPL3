@@ -1,7 +1,27 @@
 
         Class A{
-            getName(){
-                B::$a = 1;
+            Val b: Int = 5;
+            getName(a:String; b: Int; d: Boolean ){
+                Val e:String ="Hello";
+                Var g: Int = 5;
+                {
+                    Val a: Int = 5;
+                    Var e: Boolean;
+                }
+                {
+                    Var a: String;
+                    Val b: Boolean = True;
+                    {
+                        Val c:Int = 5;
+                        Var d:Boolean = True;
+                        {
+                            Val b:Int = Self.b;
+                            Var b:String;
+                        }
+                    }
+                }
+
+                
             }
         }
         

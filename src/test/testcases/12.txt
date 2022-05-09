@@ -1,25 +1,13 @@
 
         Class A{
-            getName(a:String; b: Int; d: Boolean ){
-                Val e:String;
-                {
-                    Val a: Int;
-                    Var e: Boolean;
-                }
-                {
-                    Var a: String;
-                    Val b: Boolean;
-                    {
-                        Val c: Int;
-                        Var d:Boolean;
-                        {
-                            Val b:Int;
-                            Var b:String;
-                        }
-                    }
-                }
-
-                
+            Val a:Int =  5;
+            Var b:String = "Hello";
+            getName(){
+                Val obj: A = New A();
+                obj.b = obj.a + 1; 
             }
+        }
+        Class Program{
+            
         }
         

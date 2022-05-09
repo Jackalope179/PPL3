@@ -1,18 +1,11 @@
 
-        Class A{}
-        Class Program{
-            main(){
-                Return;
-            }
-        }
-        Class B:A{
-            Var x:String;
-            x(){}
+        Class A{
             Var a:Int;
-            Var b:Int;
-            Var c:Int;
-            x(){}
-            Var x:String;
-
+            Val e:Int = 5;
+            Var b:Int = Self.a + 1;
+            Val c:Int = Self.e + b;
+        }
+        Class Program{
+            main(){}
         }
         

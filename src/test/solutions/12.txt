@@ -1,1 +1,1 @@
-Redeclared Variable: b
+Type Mismatch In Statement: AssignStmt(FieldAccess(Id(obj),Id(b)),BinaryOp(+,FieldAccess(Id(obj),Id(a)),IntLit(1)))

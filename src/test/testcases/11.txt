@@ -1,6 +1,13 @@
 
-        Class A{
-            Val a:String;
-            Var a:Int;
+        Class A:B{
+
+        }
+        Class B{
+
+        }
+        Class Program{
+            main(){
+
+            }
         }
         

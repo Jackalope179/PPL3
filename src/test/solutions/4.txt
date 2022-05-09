@@ -1,1 +1,1 @@
-Illegal Member Access: FieldAccess(Id(A),Id(a))
+Type Mismatch In Statement: AssignStmt(FieldAccess(Id(A),Id($atrr)),IntLit(123))

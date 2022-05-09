@@ -1,1 +1,27 @@
-Program([ClassDecl(Id('A'),[MethodDecl(Instance(),Id('getName'),[VarDecl(Id('a'),StringType()),VarDecl(Id('b'),IntType()),VarDecl(Id('d'),BoolType())],Block([ConstDecl(Id('e'),StringType(),None),Block([ConstDecl(Id('a'),IntType(),None),VarDecl(Id('e'),BoolType())]),Block([VarDecl(Id('a'),StringType()),ConstDecl(Id('b'),BoolType(),None),Block([ConstDecl(Id('c'),IntType(),None),VarDecl(Id('d'),BoolType()),Block([ConstDecl(Id('b'),IntType(),None)])])])]))])])
+
+        Class C{
+            Val c: Int = 56;
+        }
+        Class A:C{
+            Val a: Int = 5;
+            Var b: String;
+            method(){
+                Val a:String ="Hello";
+                Var b:A;
+                c = c + 1;
+                Val d: A = New C();
+            }
+            Var d: Int;
+        }
+        Class B:A{
+            Val a: Int;
+            method(a,b,c:A; d:Int; e:String){
+                Val f: A = New B();
+            }
+        }
+        Class Program{
+            main(){
+                Return ;
+            }
+        }
+        

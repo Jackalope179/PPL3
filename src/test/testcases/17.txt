@@ -1,0 +1,26 @@
+
+        Class A{
+            
+        }
+        Class Program{
+            Val a:Int = 5;
+            main(){
+                {
+                    Var a:Int = 1;
+                    a = a + 1;
+                    {
+                        Var a:Float;
+                        {
+                            a = a * 5;
+                            Var b:Boolean = 1 > 5;
+
+                        }
+                        {
+                            a = a * 5.0 + 1 / 2 *5.0;
+                            Val b:Int = Self.a + 1 + a;
+                        }
+                    }
+                }
+            }
+        }
+        

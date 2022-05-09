@@ -1,1 +1,63 @@
-Program([ClassDecl(Id('A'),[AttributeDecl(Instance(),ConstDecl(Id('a'),IntType(),None)),AttributeDecl(Instance(),VarDecl(Id('b'),StringType())),MethodDecl(Instance(),Id('getName'),[VarDecl(Id('a'),IntType()),VarDecl(Id('b'),IntType())],Block([ConstDecl(Id('c'),StringType(),None),VarDecl(Id('d'),IntType())])),MethodDecl(Instance(),Id('getName_'),[VarDecl(Id('a'),StringType()),VarDecl(Id('b'),StringType()),VarDecl(Id('c'),StringType()),VarDecl(Id('e'),IntType())],Block([VarDecl(Id('d'),StringType())]))]),ClassDecl(Id('B'),[AttributeDecl(Instance(),VarDecl(Id('a'),StringType())),MethodDecl(Instance(),Id('getName'),[],Block([ConstDecl(Id('c'),BoolType(),None)])),MethodDecl(Instance(),Id('getName'),[],Block([]))])])
+
+        Class A{
+            Var $a: Int;
+            Val $b: String ="Hello";
+            Val a: String = "Hello";
+            Var b: Int = 1;
+            Var c: Int = 3;
+            Val d: Float = 2.0;
+            getName(a,b,c: Int){
+                Val obj: A = New A();
+                obj.b = obj.c + 1;
+                c = c + 1;
+                {
+                    Var x: Int;
+                    obj.d = obj.d + 1;
+                }
+            }
+        }
+
+        Class B:A{
+            Val $c: Float;
+            getName(a,b,c: Int){
+                c = c + 1;
+                Val obj:B = New B();
+                obj.b = obj.c + 1;
+                obj.d = c + 1; 
+            }
+        }
+
+        Class D: B{
+            Val $d:Float = 12.6;
+            Val e: String ="Hello";
+            Val obj3: Int = 12;
+            getName(a,b,c: Int){
+                c = c + 1;
+                Val obj:D = New D();
+                obj.b = obj.c + 1;
+                obj.d = c + 1; 
+
+                Val obj2:A = New D();
+                obj2.b = obj2.c + 1;
+
+                Val obj1:B = New D();
+                obj2.b = obj2.c + 1;
+                D::$a = 1 + 1 * 2;
+            }
+        }
+        Class E{
+            Val e: Int = 5;
+        }
+        Class Program{
+            main(){
+                D::$a = 1 + 1 * 2;
+                D::$b = "Hello";
+                B::$c = 2.0;
+                Val D: D = New D();
+                D::$a = 1;
+                
+                D::$d = "Hello" +. "World";
+                Return;
+            }
+        }
+        

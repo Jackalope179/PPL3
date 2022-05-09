@@ -7,29 +7,28 @@ class ASTGenSuite(unittest.TestCase):
     def test1(self):
         """Simple program: int main() {} """
         input = """
+        Class B{
+            Val c:String = "Hlo";
+            Var $e:String ="Hello";
+        }
+        Class A:B{
+            Val a:Int = 5;
+            Var a_ :String = "Hello";
+            getName(a,b:String; c:Int){
+                Val e:String ="Herllo";
+                a = "Hello";
+                c = Self.a;
+                b = (New B()).c;
+                b = (B::$e +. Self.a_) +. New B().c;
+                Val d:B = New A();
+
+            }
+        }
         Class Program{
-                    main() { 
-                        Return;
-                    }
-                }
+            main(){
 
-               Class Khang {
-                   Var $a: Int = 5;
-                   Var kk: Float;
-                   Var ss: String = "Bug";
-               }
-
-               Class C{
-                   Var x, y: Int = 4, 5;
-                   Var tmp: Float;
-                   Var Khang: Khang;
-                   method(){
-                       Self.tmp = Self.Khang.kk + 12;
-                       Khang.ss = "yeyeye";
-                       Self.tmp = Self.Khang::$a + 10;
-                   }
-               }
-
+            }
+        }
         """
         expect = "Program([ClassDecl(Id(A),Id(B),[])])"
         self.assertTrue(TestAST.test(input,expect,1))

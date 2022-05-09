@@ -11,7 +11,7 @@
                 a = "Hello";
                 c = Self.a;
                 b = (New B()).c;
-                b = (B::$e +. Self.a_) +. New B().c;
+                b = (B::$e +. Self.a_) +. (New B()).c;
                 Val d:B = New A();
 
             }

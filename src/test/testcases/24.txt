@@ -1,0 +1,23 @@
+
+        Class A{
+            Var a:Int;
+            
+            getName(a,b:Int; c:Int){
+                Var f:Int;
+                Foreach(f In b .. c){
+                    Val a:Boolean = True;
+                    If(1 >= 5){
+                        Self.a = 7;
+                    } Elseif(a){
+                        a.b = 5;
+                    }
+                }
+
+            }
+        }
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        

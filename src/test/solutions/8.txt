@@ -1,1 +1,1 @@
-Redeclared Method: getName
+Cannot Assign To Constant: AssignStmt(FieldAccess(Id(obj),Id(d)),BinaryOp(+,FieldAccess(Id(obj),Id(d)),IntLit(1)))

@@ -1,0 +1,27 @@
+
+        Class C{
+            Var a:Int= 5;
+            Val d: Int = 5;
+            Val c:Int = 5;
+        }
+        Class B{
+            Var a: C = New C();
+            Val $b:Int = 5;
+            Val d:C = New C();
+        }
+        Class A{
+            Val a:Int = 5;
+            Val d:B = New B();
+            
+            getName(a,b:String; c:Int){
+                Val f:Int = Self.a + B::$b;
+                Val g:Int = Self.a + B::$b + (New C()).c;
+                c = Self.d.d.d + c;
+            }
+        }
+        Class Program{
+            main(){
+
+            }
+        }
+        
