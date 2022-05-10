@@ -10,12 +10,12 @@
                 } Elseif(False){
                     Return ;
                 }
-            Return;
+            Return i;
             }
         }
         Class A{
-            main(){
-               Return "Hello";
+            method(){
+               
             }
         }
         

@@ -1,0 +1,15 @@
+
+            Class A{
+                
+
+                program(){
+                    Var a:Int = 5;
+                    Val b: Int  =  1 + a + a + 5; 
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             

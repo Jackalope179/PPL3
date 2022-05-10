@@ -1,0 +1,19 @@
+
+            Class B{
+                Val a:Array[Array[String,1],1] = Array(Array("b"));
+            }
+            Class A{
+                Val a:B = New B();
+                Constructor(a:Array[String, 1]){
+
+                }
+
+                program(){
+                    Var obj: A = New A(Self.a.a[0]);
+                }
+            }
+            Class Program{
+                main(){
+                }
+            }
+             

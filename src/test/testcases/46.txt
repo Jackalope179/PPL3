@@ -1,0 +1,8 @@
+
+        Class A{
+            method(){
+                Val a: Array[Array[Int,2], 2] = Array(Array(1,2), Array(1,2));
+                Val b:Int = Self.a[0];
+            }
+        }
+        

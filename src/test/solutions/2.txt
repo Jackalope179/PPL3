@@ -1,1 +1,1 @@
-Type Mismatch In Statement: Return(StringLit(Hello))
+Undeclared Attribute: $a

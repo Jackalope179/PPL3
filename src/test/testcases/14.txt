@@ -1,10 +1,14 @@
 
-        Class A{
-            Val a:Int;
-            
-            getName(a,b:String; c:Int){
-                Val e:String;
-                Val d:A = New X();
+         Class A{
+            Contructor(a,b,c:Int){
+                Return "Hello world";
+            }
+            Destructor(){
+                Return "Hello";
+            }
+        }
+        Class Program{
+            main(){
 
             }
         }

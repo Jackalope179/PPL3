@@ -29,8 +29,6 @@
                         A.ss = "yeyeye";
                         Self.tmp = A::$a + 10;
                         A::$a = A.kk + 12 + Self.A() + Self.A - A.A() + A.A;
-                        ##* 1 / Self.A -a.A(); ##
-                        ##* 1 / Self.A - A.A() + A.A##
                    }
                }
 

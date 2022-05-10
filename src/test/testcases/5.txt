@@ -1,34 +1,28 @@
 
-        Class B{
-            Contructor(){
-                Return;
-            }
-        }
         Class A{
-            Var $a: Int; 
-            Var b: Int;
-            getName(){}
-            Constructor(a,b,c:Int; d:String; e:Array[Float,2]; obj:B){
-                Return;
+            Val $atr: Int = 1;
+            Var $atrr: String = "Hello";
+            Val a:Float = 2;
+            Var b: Boolean = True;
+            $atr(){
+                Return 5;
+            }
+            a(){
+                Return 2.0;
             }
             method(){
-                Val A: A = New A(1,2,3,"Hello", Array(1.0, 2.0), New B());
-                A::$a = 1;
+                Val A:A = New A();
+                Var cal: Int = 1;
+                Var f:Float = 5.6;
+                A::$atrr = "Hello wordl" +. A::$atrr;
+                A.b = False;
+                cal = A::$atr() + 5;
+                f = A.a() + 3.0;
+                Return cal;
             }
         }
-
         Class Program{
-            Var a:Array[Array[Int,2],2];
-            Val c:Boolean = True;
-            method(a:Array[Array[Int,2],2]; b:A; c:Boolean){
-                Return 123;
-            }
             main(){
-                Val b:Int = 5;
-                Var c:Int = 6;
-                Val a:A = New A(b,c,6, "Hello World", Array(2,3), New B());
-                Var d: Float = Self.method(Self.a, a, Self.c);
-                Var obj:A;
                 Return;
             }
         }

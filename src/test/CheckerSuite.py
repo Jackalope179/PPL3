@@ -71,7 +71,7 @@ class CheckerSuite(unittest.TestCase):
     #     }
     #     """
     #     expect = "Type Mismatch In Expression: BinaryOp(*,Id(d),StringLit(Hello world))"
-    #     self.assertTrue(TestChecker.test(input,expect,"1"))
+    #     self.assertTrue(TestChecker.test(input,expect,1))
 
     # def test2(self):
     #     """Simple program: int main() {} """
@@ -243,7 +243,7 @@ class CheckerSuite(unittest.TestCase):
     #         }
     #     }
     #     """
-    #     expect = ""
+    #     expect = "Type Mismatch In Statement: Return(StringLit(Hello))"
     #     self.assertTrue(TestChecker.test(input,expect,6))
 
     # def test7(self):
@@ -338,7 +338,7 @@ class CheckerSuite(unittest.TestCase):
 
 
     #     """
-    #     expect = """"""
+    #     expect = """Type Mismatch In Statement: Call(NewExpr(Id(A),[]),Id(method),[NewExpr(Id(A),[])])"""
     #     self.assertTrue(TestChecker.test(input,expect,7))
 
 
@@ -752,7 +752,7 @@ class CheckerSuite(unittest.TestCase):
     #         }
     #     }
     #     """
-    #     expect = ""
+    #     expect = "Type Mismatch In Statement: VarDecl(Id(c_),IntType,ArrayCell(Id(arr_),[IntLit(1)]))"
     #     self.assertTrue(TestChecker.test(input,expect,23))
 
     # def test24(self):
@@ -1032,7 +1032,7 @@ class CheckerSuite(unittest.TestCase):
     #         }
     #     }
     #     """
-    #     expect = ""
+    #     expect = "Type Mismatch In Expression: CallExpr(Self(),Id(att),[])"
     #     self.assertTrue(TestChecker.test(input,expect,34))
 
     # def test35(self):
@@ -1292,45 +1292,14 @@ class CheckerSuite(unittest.TestCase):
 
     #     }
     #     """
-    #     expect = ""
+    #     expect = "Undeclared Class: D"
     #     self.assertTrue(TestChecker.test(input, expect, 43))
 
-    def test44(self):
-        input = """
-            Class A{
-                Var a: Array[Array[Int,2], 3] = Array(Array(1,2), Array(3,4), Array(5,6));
-                Var b: Array[Array[Int,2], 3] = Array(Array(1,2,3), Array(3,4), Array(5,6));
-            }
-            Class Program{
-                main(){
-                    Return;
-                }
-            }
-             """
-        expect = "Illegal Array Literal: [[IntLit(1),IntLit(2),IntLit(3)],[IntLit(3),IntLit(4)],[IntLit(5),IntLit(6)]]"
-        self.assertTrue(TestChecker.test(input, expect, 44))
-    
-    def test45(self):
-        input = """
-            Class A{
-                Val a: Array[Array[Array[String,2], 3], 1] = Array(Array(Array("khang", "best"), Array("heo","ngu"), Array("Hana", "cute")));
-                Var b: Array[Array[Array[String,2], 3], 1] = Array(Array(Array("1", "best"), Array("heo","ngu"), Array("khang", "pro")));
-                Var c: Array[Float, 4] = Array(5.67, 1e10, 6.890, 2.5e-10);
-                Var d: Array[Array[Int,2], 3] = Array(Array(1,2), Array(3,4), Array(5,6), Array(7,8));
-            }
-            Class Program{
-                main(){
-                    Return;
-                }
-            }
-             """
-        expect = "Type Mismatch In Constant Declaration: AttributeDecl(Instance,VarDecl(Id(d),ArrayType(3,ArrayType(2,IntType)),[[IntLit(1),IntLit(2)],[IntLit(3),IntLit(4)],[IntLit(5),IntLit(6)],[IntLit(7),IntLit(8)]]))"
-        self.assertTrue(TestChecker.test(input, expect, 45))
-    
-    # def test_array_function_11(self):
+    # def test44(self):
     #     input = """
     #         Class A{
-    #             Val a: Array[Array[Int,2], 3] = Array(1, Array(3,4), Array(5,6));
+    #             Var a: Array[Array[Int,2], 3] = Array(Array(1,2), Array(3,4), Array(5,6));
+    #             Var b: Array[Array[Int,2], 3] = Array(Array(1,2,3), Array(3,4), Array(5,6));
     #         }
     #         Class Program{
     #             main(){
@@ -1338,71 +1307,16 @@ class CheckerSuite(unittest.TestCase):
     #             }
     #         }
     #          """
-    #     expect = "Illegal Array Literal: [IntLit(1),[IntLit(3),IntLit(4)],[IntLit(5),IntLit(6)]]"
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 11'))
+    #     expect = "Illegal Array Literal: [[IntLit(1),IntLit(2),IntLit(3)],[IntLit(3),IntLit(4)],[IntLit(5),IntLit(6)]]"
+    #     self.assertTrue(TestChecker.test(input, expect, 44))
     
-    # def test_array_function_12(self):
-    #     input = """
-    #         Class A{
-    #             Var a: Array[Array[Int,2], 3] = Array(Array(1,2), Array(3,4), Array(5,6), Array(7,8));
-    #         }
-    #         Class Program{
-    #             main(){
-    #                 Return;
-    #             }
-    #         }
-    #          """
-    #     expect = "Type Mismatch In Statement: VarDecl(Id(a),ArrayType(3,ArrayType(2,IntType)),[[IntLit(1),IntLit(2)],[IntLit(3),IntLit(4)],[IntLit(5),IntLit(6)],[IntLit(7),IntLit(8)]])"
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 12'))
-    
-    # def test_array_function_13(self):
-    #     input = """
-    #         Class A{
-    #             Var a: Array[Array[Int,2], 4] = Array(Array(1,2), Array(3,4), Array(5,6), Array(7,8));
-    #         }
-    #         Class Program{
-    #             main(){
-    #                 Return;
-    #             }
-    #         }
-    #          """
-    #     expect = ""
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 13'))
-    
-    # def test_array_function_14(self):
-    #     input = """
-    #         Class A{
-    #             Val a: Array[Array[Int,2], 3] = Array(Array(1, 2), Array(3,4), Array(5,6.5));
-    #         }
-    #         Class Program{
-    #             main(){
-    #                 Return;
-    #             }
-    #         }
-    #          """
-    #     expect = "Illegal Array Literal: [[IntLit(1),IntLit(2)],[IntLit(3),IntLit(4)],[IntLit(5),FloatLit(6.5)]]"
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 14'))
-    
-    # def test_array_function_15(self):
-    #     input = """
-    #         Class A{
-    #             Var a: Array[Float, 4] = Array(5.67, 1e10, 6.890, 2.5e-10);
-    #         }
-    #         Class Program{
-    #             main(){
-    #                 Return;
-    #             }
-    #         }
-    #          """
-    #     expect = ""
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 15'))
-    
-    # def test_array_function_16(self):
+    # def test45(self):
     #     input = """
     #         Class A{
     #             Val a: Array[Array[Array[String,2], 3], 1] = Array(Array(Array("khang", "best"), Array("heo","ngu"), Array("Hana", "cute")));
-    #             Var a: Array[Array[Array[String,2], 3], 1] = Array(Array(Array("1", "best"), Array("heo","ngu"), Array("khang", "pro")));
-
+    #             Var b: Array[Array[Array[String,2], 3], 1] = Array(Array(Array("1", "best"), Array("heo","ngu"), Array("khang", "pro")));
+    #             Var c: Array[Float, 4] = Array(5.67, 1e10, 6.890, 2.5e-10);
+    #             Var d: Array[Array[Int,2], 3] = Array(Array(1,2), Array(3,4), Array(5,6), Array(7,8));
     #         }
     #         Class Program{
     #             main(){
@@ -1410,723 +1324,1226 @@ class CheckerSuite(unittest.TestCase):
     #             }
     #         }
     #          """
-    #     expect = ""
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 16'))
+    #     expect = "Type Mismatch In Constant Declaration: AttributeDecl(Instance,VarDecl(Id(d),ArrayType(3,ArrayType(2,IntType)),[[IntLit(1),IntLit(2)],[IntLit(3),IntLit(4)],[IntLit(5),IntLit(6)],[IntLit(7),IntLit(8)]]))"
+    #     self.assertTrue(TestChecker.test(input, expect, 45))
 
-    # def test_array_function_17(self):
+    # def test46(self):
     #     input = """
     #     Class A{
-    #         Var x:Int;
-    #     }
-
-    #     Class B{
-    #         Var x:A;
-    #     }
-
-    #     Class Program{
+    #         Val method:Int = 1;
+    #         Var method_:Int = 5;
     #         method(){
-    #             Var x: B;
-    #             x.x.x = 1;
     #             Return 1;
-    #             Return 2;
     #         }
-
+    #         Val a:Int = Self.method();
     #         main(){
-    #             B = 1;
+    #             Val a:Int = Self.method;
+    #             Val b:Int = Self.method;
+    #         }
+            
+    #     }
+    #     Class Program{
+    #         main(){
+    #             Return;
+    #         }
+    #     }
+    #     """
+    #     expect = "Illegal Constant Expression: CallExpr(Self(),Id(method),[])"
+    #     self.assertTrue(TestChecker.test(input, expect, 46))
+
+    # def test47(self):
+    #     input = """
+    #     Class A{
+    #         method(){
+    #             Val a: Array[Array[Int,2], 2] = Array(Array(1,2), Array(1,2));
+    #             Var b:Int = a[0][1];
+    #         }
+    #     }
+    #     Class Program{
+    #         main(){
+    #             Return;
     #         }
     #     }
     #     """
     #     expect = "[]"
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 17'))
-
+    #     self.assertTrue(TestChecker.test(input, expect, 47))
     
-
-    # def test0(self):
+    # def test48(self):
     #     input = """
-    #     Class A{
-    #         Constructor(a,b:Int; c:String; d:Float){
-    #             Return;
-    #         }
-    #     }
-    #     Class Program{
-    #         program(){
-    #             Val a:A = New A(1,2,"Hello", 1.5);
-    #         }
-    #         main(){
-    #             Return;
-    #         }
-    #     }
-    #     """
-    #     expect = ""
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 0'))
+    #         Class A{
+    #             Val a: Array[Array[String,1],2] = Array(Array("a"), Array("b"));
+    #             Val b: Array[Array[Array[Int,1],1],1] = Array(Array(Array(1)));
+    #             Var c: Array[Array[Array[Float,1],1],1] = Array(Array(Array(1.0)));
+    #             Var d: Array[Array[Array[Array[Float, 1],1],1],1] = Array(Array(Array(Array(1.0))));
 
-    # def test_attributeAccess_function_83(self):
-    #     input = """
-    #             Class Program{
-    #                 main() { 
-    #                     Return;
-    #                 }
+    #             program(){
+    #                 Val a:String = Self.a[0][0];
+    #                 Val b:Int = Self.b[0][0][0];
+    #                 Self.c[0][0][0] = Self.b[0][0][0];
+    #                 Self.c[0] = Self.d[0][0];
     #             }
-                             
-    #            Class Khang {
-    #                Var $a: Int = 5;
-    #                Var kk: Float;
-    #            }
+    #         }
+    #         Class Program{
+    #             main(){
+    #                 Return;
+    #             }
+    #         }
+    #          """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 48))
 
-    #            Class C{
-    #                Var a, b: Int = 4, 5;
-    #                Var c: Float = 5.5;
-    #                Var x: Khang;
-    #                method(){
-    #                    a = Khang::$a;
-    #                    x.kk = c + 12.56 / 3;
-    #                    x::$a = 10;
-    #                }
-    #            }
-
-    #             """
-    #     expect = "Illegal Member Access: FieldAccess(Id(x),Id($a))"
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 83'))
-
-    # def test_attributeAccess_function_84(self):
+    # def test49(self):
     #     input = """
-    #             Class Program{
-    #                 main() { 
-    #                     Return;
-    #                 }
+    #         Class A{
+    #             Val a: Array[Array[String,1],2] = Array(Array("a"), Array("b"));
+    #             Val b: Array[Array[Array[Int,1],1],1] = Array(Array(Array(1)));
+    #             Val $b: Array[Array[Array[Int,1],1],1] = Array(Array(Array(1)));
+    #             Var c: Array[Array[Array[Float,1],1],1] = Array(Array(Array(1.0)));
+    #             Var d: Array[Array[Array[Array[Float, 1],1],1],1] = Array(Array(Array(Array(1.0))));
+
+    #             Constructor(a: Array[Array[Int,1],1]; b:Int){
+    #                 Return;
     #             }
                 
-    #            Class Khang {
-    #                Var $a: Int = 5;
-    #                Var kk: Float;
-    #            }
+    #             program(){
+    #                 Var o: Array[Array[Int,1],1] = Self.b[0];
+    #                 Val obj: A = New A(Self.b[0], A::$b[0][0][0]);
+    #                 Val a:String = obj.a[0][0]; 
+    #             }
+    #             Destructor(){
+    #                 Return;
+    #             }
+    #         }
+    #         Class Program{
+    #             main(){
+    #                 Return;
+    #             }
+    #         }
+    #          """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 49))
 
-    #            Class C{
-    #                Var a, b: Int = 4, 5;
-    #                Var x: Khang;
-    #                method(){
-    #                    a = x::$b + 12;
-    #                }
-    #            }
-
-    #             """
-    #     expect = "Illegal Member Access: FieldAccess(Id(x),Id($b))"
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 84'))
-
-    # def test_attributeAccess_function_85(self):
+    # def test48(self):
     #     input = """
-    #             Class Program{
-    #                 main() { 
-    #                     Return;
-    #                 }
-    #             } 
+    #         Class A{
+    #             Val a: Array[Array[String,1],2] = Array(Array("a"), Array("b"));
+    #             Val b: Array[Array[Array[Int,1],1],1] = Array(Array(Array(1)));
+    #             Var c: Array[Array[Array[Float,1],1],1] = Array(Array(Array(1.0)));
+    #             Var d: Array[Array[Array[Array[Float, 1],1],1],1] = Array(Array(Array(Array(1.0))));
+
+    #             program(){
+    #                 Val a:String = Self.a[0][0];
+    #                 Val b:Int = Self.b[0][0][0];
+    #                 Self.c[0][0][0] = Self.b[0][0][0];
+    #                 Self.c[0] = Self.d[0][0];
+    #             }
+    #         }
+    #         Class Program{
+    #             main(){
+    #                 Return;
+    #             }
+    #         }
+    #          """
+    #     expect = "[]"
+    #     self.assertTrue(TestChecker.test(input, expect, 48))
+    
+    # def test49(self):
+    #     input = """
+    #         Class A{
+    #             Val a: Array[Array[String,1],2] = Array(Array("a"), Array("b"));
+    #             Val b: Array[Array[Array[Int,1],1],1] = Array(Array(Array(1)));
+    #             Var c: Array[Array[Array[Float,1],1],1] = Array(Array(Array(1.0)));
+    #             Var d: Array[Array[Array[Array[Float, 1],1],1],1] = Array(Array(Array(Array(1.0))));
+
+    #             program(){
+    #                 Val a:String = Self.a[0][0];
+    #                 Val b:Int = Self.b[0][0][0];
+    #                 Self.c[0][0][0] = Self.b[0][0][0];
+    #                 Self.c[0] = Self.d[0][0];
+    #             }
+    #         }
+    #         Class Program{
+    #             main(){
+    #             }
+    #         }
+    #          """
+    #     expect = "No Entry Point"
+    #     self.assertTrue(TestChecker.test(input, expect, 49))
+
+
+
+    # def test50(self):
+    #     input = """
+    #         Class B{
+    #             $method(){
+    #                 Return "Hello";
+    #             }
+    #         }
+    #         Class A:B{
+               
+
+    #             program(){
+    #                 Val a: String = "Hello" +. B::$method();
+    #             }
+    #         }
+    #         Class Program{
+    #             main(){
+    #                 Return;
+    #             }
+    #         }
+    #          """
+    #     expect = "Illegal Constant Expression: BinaryOp(+.,StringLit(Hello),CallExpr(Id(B),Id($method),[]))"
+    #     self.assertTrue(TestChecker.test(input, expect, 50))
+
+    # def test51(self):
+    #     input = """
+    #         Class A{
                 
-    #            Class Khang {
-    #                Var $a: Int = 5;
-    #                Var kk: Float;
-    #            }
 
-    #            Class C{
-    #                Var a, b: Int = 4, 5;
-    #                Var x: Khang;
-    #                method(){
-    #                    a = Khang::$a + 12;
-    #                    b = Khang::$c + 12;
-    #                }
-    #            }
-
-    #             """
-    #     expect = "Undeclared Attribute: $c"
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 85'))
-
-    # def test_attributeAccess_function_86(self):
-    #     input = """
-    #             Class Program{
-    #                 main() { 
-    #                     Return;
-    #                 }
+    #             program(){
+    #                 Var a:Int = 5;
+    #                 Val b: Int  =  1 + a + a + 5; 
     #             }
-        
-    #            Class A {
-    #                Var x: Int = 10;
-    #            }
-
-    #            Class Khang {
-    #                Var $a: Int = 5;
-    #                Var kk: Float;
-    #            }
-
-    #            Class C{
-    #                Var a, b: Int = 4, 5;
-    #                Var x: Khang;
-    #                method(){
-    #                    a = B::$a + 12;
-    #                }
-    #            }
-
-    #             """
-    #     expect = "Undeclared Class: B"
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 86'))
-
-    # def test_attributeAccess_function_87(self):
-    #     input = """
-    #             Class Program{
-    #                 main() { 
-    #                     Return;
-    #                 }
-    #             }
-        
-    #            Class A {
-    #                Var x: Int = 10;
-    #            }
-
-    #            Class Khang {
-    #                Var $a: Int = 5;
-    #                Var kk: Float;
-    #            }
-
-    #            Class C{
-    #                Var x, y: Int = 4, 5;
-    #                Var z: Khang;
-    #                method(){
-    #                    x = y::$a + 12;
-    #                }
-    #            }
-
-    #             """
-    #     expect = "Type Mismatch In Expression: FieldAccess(Id(y),Id($a))"
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 87'))
-
-
-    # def test_attributeAccess_function_88(self):
-    #     input = """
-    #             Class Program{
-    #                 main() { 
-    #                     Return;
-    #                 }
-    #             }
-
-    #            Class Khang {
-    #                Var $a: Int = 5;
-    #                Var kk: Float;
-    #                Val ss: String = "Bug";
-    #            }
-
-    #            Class C{
-    #                Var x, y: Int = 4, 5;
-    #                Var z: Khang;
-    #                method(){
-    #                    x = x.kk + 12;
-    #                }
-    #            }
-
-    #             """
-    #     expect = "Type Mismatch In Expression: FieldAccess(Id(x),Id(kk))"
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 88'))
-
-    # def test_attributeAccess_function_89(self):
-    #     input = """
-    #             Class Program{
-    #                 main() { 
-    #                     Return;
-    #                 }
-    #             }
-
-    #            Class Khang {
-    #                Var $a: Int = 5;
-    #                Var kk: Float;
-    #                Val ss: String = "Bug";
-    #            }
-
-    #            Class C{
-    #                Var x, y: Int = 4, 5;
-    #                Var z: Khang;
-    #                method(){
-    #                    x = (1+1).kk + 12;
-    #                }
-    #            }
-
-    #             """
-    #     expect = "Type Mismatch In Expression: FieldAccess(BinaryOp(+,IntLit(1),IntLit(1)),Id(kk))"
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 89'))
-
-
-    # def test_attributeAccess_function_90(self):
-    #     input = """
-    #             Class Program{
-    #                 main() { 
-    #                     Return;
-    #                 }
-    #             }
-
-    #            Class Khang {
-    #                Var $a: Int = 5;
-    #                Var kk: Float;
-    #                Var ss: String = "Bug";
-    #            }
-
-    #            Class C{
-    #                Var x, y: Int = 4, 5;
-    #                Var tmp: Float;
-    #                method(){
-    #                     Var Khang: Khang;
-    #                     Self.tmp = Khang.kk + 12;
-    #                     Self.Khang.ss = "yeyeye";
-    #                     Self.tmp = Khang::$a + 10;
-    #                }
-    #            }
-
-    #             """
-    #     expect = "Illegal Member Access: FieldAccess(Id(Khang),Id($a))"
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 90'))
-
-
-    # def test_attributeAccess_function_91(self):
-    #     input = """
-    #             Class Program{
-    #                 main() { 
-    #                     Return;
-    #                 }
-    #             }
-
-    #            Class Khang {
-    #                Var $a: Int = 5;
-    #                Var kk: Float;
-    #                Val ss: String = "Bug";
-    #            }
-
-    #            Class C{
-    #                Var x, y: Int = 4, 5;
-    #                Var tmp: Float;
-    #                Var h: Khang;
-
-    #                method(){
-    #                    Var obj: C;
-    #                    obj.x = Khang::$a + 10 / 5;
-    #                    obj.h.kk = 12 * 56;
-    #                    obj.h.ss = "yeye";
-    #                }
-    #            }
-
-    #             """
-    #     expect = "Cannot Assign To Constant: AssignStmt(FieldAccess(Id(h),Id(ss)),StringLit(yeye))"
-    #     self.assertTrue(TestChecker.test(input, expect, 'Test 91'))
-
-    # def test3(self):
-    #     input = """
-    #     Class A {
-    #         Val a: A = New A();
-    #     }
-    #     Class Program {
-    #         main() {
-    #             Val a: A = New A().a;
-    #             New A().a = 5;
     #         }
-    #     }
-    #     """
-    #     expect = "Cannot Assign To Constant: AssignStmt(FieldAccess(NewExpr(Id('A'),[]),Id('a')),IntLit(5))"
-    #     self.assertTrue(TestChecker.test(input,expect,"Test_3"))
-
-    # def test_12(self):
-    #     input = """
-    #     Class Program {
-    #         Var a: Float;
-    #         main() {
-    #             Self.a();
+    #         Class Program{
+    #             main(){
+    #                 Return;
+    #             }
     #         }
-    #     }
-    #     """
-    #     expect = "Undeclared Method: a"
-    #     self.assertTrue(TestChecker.test(input,expect,"Test_12"))
+    #          """
+    #     expect = "Illegal Constant Expression: BinaryOp(+,BinaryOp(+,BinaryOp(+,IntLit(1),Id(a)),Id(a)),IntLit(5))"
+    #     self.assertTrue(TestChecker.test(input, expect, 51))
 
-# import unittest
-# from TestUtils import TestChecker
-# from AST import *
-
-
-# class CheckerSuite(unittest.TestCase):
-    # def test_1(self):
+    # def test52(self):
     #     input = """
-    #     Class Program {}
-    #     """
+    #         Class B{
+    #             Var a:Array[Array[String,1],1];
+    #         }
+    #         Class A{
+    #             Var a:B;
+    #             Constructor(a:Array[String, 1]){
+
+    #             }
+
+    #             program(){
+    #                 Var obj: A = New A(Self.a.a[0]);
+    #             }
+    #         }
+    #         Class Program{
+    #             main(){
+    #             }
+    #         }
+    #          """
     #     expect = "No Entry Point"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_1"))
-
-    # def test_2(self):
+    #     self.assertTrue(TestChecker.test(input, expect, 52))
+    
+    # def test53(self):
     #     input = """
-    #     Class Program {
-    #         main(a: Int) {}
-    #     }
-    #     """
+    #         Class B{
+    #             Val a:Array[Array[String,1],1] = Array(Array("b"));
+    #         }
+    #         Class A{
+    #             Val a:B = New B();
+    #             Constructor(a:Array[String, 1]){
+
+    #             }
+
+    #             program(){
+    #                 Var obj: A = New A(Self.a.a[0]);
+    #             }
+    #         }
+    #         Class Program{
+    #             main(){
+    #             }
+    #         }
+    #          """
     #     expect = "No Entry Point"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_2"))
-
-    # def test_3(self):
+    #     self.assertTrue(TestChecker.test(input, expect, 53))
+    
+    # def test54(self):
     #     input = """
-    #     Class A {
-    #         Val a: A = New A();
-    #     }
-    #     Class Program {
-    #         main() {
-    #             Val a: A = New A().a;
-    #             New A().a = a;
+    #         Class B{
+    #             Val a:Array[Array[String,1],1] = Array(Array("a"));
     #         }
-    #     }
-    #     """
-    #     expect = "Cannot Assign To Constant: AssignStmt(FieldAccess(NewExpr(Id(A),[]),Id(a)),Id(a))"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_3"))
+    #         Class A{
+    #             Val a:B = New B();
+    #             Constructor(a:Array[String, 1]){
 
-    # def test_4(self):
-    #     input = """
-    #     Class Program {
-    #         main() {
-    #             Val a: Int = 5.5;
-    #         }
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Constant Declaration: ConstDecl(Id(a),IntType,FloatLit(5.5))"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_4"))
+    #             }
 
-    # def test_5(self):
-    #     input = """
-    #     Class Program {
-    #         main() {
-    #             Val a: Int;
+    #             program(){
+    #                 Val obj: A = New A(Self.a.a[0]);
+    #             }
     #         }
-    #     }
-    #     """
-    #     expect = "Illegal Constant Expression: None"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_5"))
+    #         Class Program{
+    #             main(){
+    #             }
+    #         }
+    #          """
+    #     expect = "No Entry Point"
+    #     self.assertTrue(TestChecker.test(input, expect, 54))
 
-    # def test_6(self):
-    #     input = """
-    #     Class Program {
-    #         main() {
-    #             Var a: Int;
-    #             a = 5.5;
-    #         }
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Statement: AssignStmt(Id(a),FloatLit(5.5))"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_6"))
+    def test55(self):
+        input = """
+            Class A{
+                Val a: Int;
 
-    # def test_7(self):
-    #     input = """
-    #     Class Program {
-    #         Var a: Float;
-    #         main() {
-    #             Var a: Int;
-    #             Self.a = 10;
-    #             a = 5 + 5.5;
-    #         }
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Statement: AssignStmt(Id(a),BinaryOp(+,IntLit(5),FloatLit(5.5)))"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_7"))
+                program(){
 
-    # def test_8(self):
-    #     input = """
-    #     Class Program {
-    #         Var a: Float;
-    #         main() {
-    #             Var a: Int;
-    #             Self.a = 10;
-    #             a = 5 + 5.5;
-    #         }
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Statement: AssignStmt(Id(a),BinaryOp(+,IntLit(5),FloatLit(5.5)))"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_8"))
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 55))
+    
+    def test56(self):
+        input = """
+            Class A{
+                Val a: A;
 
-    # def test_9(self):
-    #     input = """
-    #     Class Program {
-    #         Var a: Float;
-    #         main() {
-    #             Self.a = 10;
-    #             a = 5 + 5.5;
-    #         }
-    #     }
-    #     """
-    #     expect = "Undeclared Identifier: a"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_9"))
+                program(){
 
-    # def test_10(self):
-    #     input = """
-    #     Class Program {
-    #         Var a: Float;
-    #         main() {
-    #             Self.b = 10;
-    #         }
-    #     }
-    #     """
-    #     expect = "Undeclared Attribute: b"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_10"))
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 56))
+    
+    def test57(self):
+        input = """
+            Class A{
 
-    # def test_11(self):
-    #     input = """
-    #     Class B : A{}
-    #     Class Program {
-    #         Var a: Float;
-    #         main() {
-    #             Self.a = 10;
-    #         }
-    #     }
-    #     """
-    #     expect = "Undeclared Class: A"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_11"))
+                program(){
+                    Val a: Int;
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 57))
+    
+    def test58(self):
+        input = """
+            Class A{
 
-    # def test_12(self):
-    #     input = """
-    #     Class Program {
-    #         Val a: Float = 5;
-    #         main() {
-    #             Self.a();
-    #         }
-    #     }
-    #     """
-    #     expect = "Undeclared Method: a"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_12"))
+                program(){
+                    Val a: A;
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 58))
+    
+    def test59(self):
+        input = """
+            Class A{
+                main(){
+                    Val a: Int = 1;
+                    {
+                        Var b:Array[Int,5] = Array(1,2,3,4,5);
+                        a = b[0];
+                        {
+                            b[0] = a;
+                            b[0] = b[1];
+                        }
+                    }
+                }
+            
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 59))
+    
+    def test60(self):
+        input = """
+            Class B{
+                main(){
+                    Return "Hello";
+                }
+            }
+            Class A{
 
-    # def test_13(self):
-    #     input = """
-    #     Class Program {
-    #         Val a: Float = 5;
-    #         main() {
-    #             Var a: Program;
-    #             a.a = 10;
-    #         }
-    #     }
-    #     """
-    #     expect = "Cannot Assign To Constant: AssignStmt(FieldAccess(Id(a),Id(a)),IntLit(10))"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_13"))
+                program(){
+                    Return;
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 60))
+    
+    def test61(self):
+        input = """
+            Class A{
+                program(){
+                }
+                
+                program_(){
+                    Return;
+                }
 
-    # def test_14(self):
-    #     input = """
-    #     Class Program {
-    #         Var a: Float;
-    #         a(a: Int) {
-    #             Return Self.a;
-    #         }
-    #         main(){}
-    #     }
-    #     """
-    #     expect = "Redeclared Method: a"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_14"))
+                main(){
+                    Val a: A = New A();
+                    a.program();
+                    a.program_();
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+            """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 61))
+    
+    def test62(self):
+        input = """
+            Class A{
+                Var $a:Int = 5;
+                Val $b: Int = 6;
+                program(){
+                    Val a:A = New A();
+                    a::$a = a::$a;
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 62))
+    
+    def test63(self):
+        input = """
+            Class A{
+                Var $a:Int = 5;
+                Val $b: Int = 6;
+                Val a:Int = 5;
+                program(){
+                    Val a:A = New A();
+                    A::$a = A::$a;
+                    A.a = 5;
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 62))
+    def test62(self):
+        input = """
+           Class A{
+                Var $a:Int = 5;
+                Val $b: Int = 6;
+                Val a:Int = 5;
+                program(){
+                    Val a:A = New A();
+                    A::$a = A::$a;
+                    obj.a = 5;
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 63))
+    
+    def test64(self):
+        input = """
+            Class A{
+                Var $a:Int = 5;
+                Val $b: Int = 6;
+                Val a:Int = 5;
+                program(){
+                    Val a:A = New A();
+                    Val obj:A = New A();
+                    A::$a = A::$a;
+                    obj.att = 5;
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+            """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 64))
+    
+    def test65(self):
+        input = """
+            Class A{
+                Var $a:Int = 5;
+                Val $b: Int = 6;
+                Val a:Int = 5;
+                method(){
 
-    # def test_15(self):
-    #     input = """
-    #     Class Program {
-    #         a(a: Int) {
-    #             Var a: Float;
-    #         }
-    #         main(){}
-    #     }
-    #     """
-    #     expect = "Redeclared Variable: a"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_15"))
+                }
+                program(){
+                    Val a:A = New A();
+                    Val obj:A = New A();
+                    A::$a = A::$a;
+                    Val a:Int= obj.method_();
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+            """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 65))
+    
+    def test66(self):
+        input = """
+            Class A{
+                Var $a:Int = 5;
+                Val $b: Int = 6;
+                Val a:Int = 5;
+                method(){
 
-    # def test_16(self):
-    #     input = """
-    #     Class Program {}
-    #     Class Program {
-    #         a(a: Int) {
-    #         }
-    #         main(){}
-    #     }
-    #     """
-    #     expect = "Redeclared Class: Program"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_16"))
+                }
+                program(){
+                    Val a:A = New A();
+                    Val obj:A = New A();
+                    A::$a = A::$a;
+                    Val a:Int= obj.method();
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 66))
+    
+    def test67(self):
+        input = """
+            Class A{
+                Var $a:Int = 5;
+                Val $b: Int = 6;
+                Val a:Int = 5;
+                method(){
+                    Return 1;
+                }
+                program(){
+                    Val a:A = New A();
+                    Val obj:A = New A();
+                    A::$a = A::$a;
+                    Val a:Int= obj.method();
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 67))
+    
+    def test68(self):
+        input = """
+            Class A{
+                Val c:Array[Array[Int,1],1] = Array(Array(1))
+                Val b:Int = Self.c[0][0];
+                Val a:Int = Self.b;
+                program(){
+                    Val a:Int = Self.a;
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 68))
+    
+    def test69(self):
+        input = """
+            Class A{
+                Val a:Boolean = True;
+            }
+            Class B{
+                Val a:A = New A();
+            }
+            Class C{
+                Val a:B = New B();
+            }
+            Class Program(){
+                main(){
+                    Return;
+                    Val obj:C = New C();
+                    
+                    If(obj.a.a.a){
 
-    # def test_17(self):
-    #     input = """
-    #     Class Program {
-    #         a(a: Int) {}
-    #         Var a: Float;
-    #         main(){}
-    #     }
-    #     """
-    #     expect = "Redeclared Attribute: a"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_17"))
+                    } Else{
 
-    # def test_18(self):
-    #     input = """
-    #     Class Program {
-    #         a(a: Int; a: Float) {}
-    #         main(){}
-    #     }
-    #     """
-    #     expect = "Redeclared Parameter: a"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_18"))
+                    }
+                }
+            }
+            """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 69))
+    
+    def test70(self):
+        input = """
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+            Class Base{
+                Var $a:Int = 5;
+            }
+            Class A:Base{
+                method(){
+                    A::$a = 5;   
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 70))
+    
+    def test71(self):
+        input = """
+            Class A{
+                $method(){
+                    Return 1;
+                }
+            }
+            Class B{
+                $method(){
+                    Return A::$method();
+                }
+            }
+            Class C{
+                $method(){
+                    Return B::$method();
+                }
+            }
+            Class Program(){
+                main(){
+                    Return;
+                    Var a:Int = C::$method();
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 72))
+    
+    def test72(self):
+        input = """
+            Class Program(){
+                main(){
+                    {
+                        Var i:Int = 5;
+                        Foreach(i In 1 .. 100){
+                            Break;
+                            {
+                                Break;
+                            }
+                        }
+                        {
+                            Break;
+                        }
+                    }
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 72))
+    
+    def test73(self):
+        input = """
+            Class A{
+                $method(){
+                    Return 1;
+                }
+            }
+            Class B{
+                $method(){
+                    Return A::$method();
+                }
+            }
+            Class C{
+                $method(){
+                    Return B::$method();
+                }
+            }
+            Class Program(){
+                method(){
+                    If(True){
+                        Return C::$method();
+                    } Else{
+                        Return 1;
+                    }
+                }
+                main(){
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 73))
+    
+    def test74(self):
+        input = """
+            Class A{
 
-    # def test_19(self):
-    #     input = """
-    #     Class Program {
-    #         a(a: Int) {
-    #             Val a: Float = 5.5;
-    #         }
-    #         main(){}
-    #     }
-    #     """
-    #     expect = "Redeclared Constant: a"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_19"))
+            }
+            Class Program :A {
+                main(){
+                    Return;
+                }
+            }
+            Class C:D{
 
-    # def test_20(self):
-    #     input = """
-    #     Class Program {
-    #         a(a: Int) {
-    #             Var b: Int = 5;
-    #             Val c: Float = 5.5e3;
-    #             b = 1 + c;
-    #         }
-    #         main(){}
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Statement: AssignStmt(Id(b),BinaryOp(+,IntLit(1),Id(c)))"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_20"))
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 74))
+    
+    def test75(self):
+        input = """
+            Class A{
+                Val a:Boolean = True;
+            }
+            
+            Class Program(){
+                main(){
+                    Return;
+                    Var a:Int = C::$a;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 75))
+    
+    def test76(self):
+        input = """
+            Class A{
 
-    # def test_21(self):
-    #     input = """
-    #     Class Program {
-    #         a(a: Int) {
-    #             Var b: String = "Hello ";
-    #             b = b + a;
-    #         }
-    #         main(){}
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Expression: BinaryOp(+,Id(b),Id(a))"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_21"))
+            }
+            Class B{
+                main(){
+                    Var a:Array[Array[Int,1],1];
+                    Var b:Array[Array[Float,1],1];
+                    Var c:Float = a[0][0] + b[0][0];
+                    Var d:Array[Array[String,1],1];
+                    Var e:Boolean = d[0][0] ==. "Hello";
+                    Var f:Float = a + b - c / a * b;
+                    Var g:Boolean = 1 > 5;
+                    Var w:Boolean = g && e || g;
+                    b = -a;
+                    b = -b;
+                }
+            }
+            """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 76))
+    
+    def test77(self):
+        input = """
+            Class Program(){
+                main(){
+                    Val c:Int = 5;
+                    c = c[0];
+                    Return;
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 77))
+    
+    def test78(self):
+        input = """
+            Class A{
+                Val a:Array[Int,5] = Array(1,2,3,4,5);
+            }
+            Class B{
+                Val a:A = New A();
+            }
+            Class C{
+                Val a:B = New B();
+            }
+            Class Program(){
+                main(){
+                    Return;
+                    Var obj:C = New C();
+                    Val a:Int = obj.a.a.a[0];
 
-    # def test_22(self):
-    #     input = """
-    #     Class Program {
-    #         a(a: Int) {
-    #             Return a;
-    #         }
-    #         main(){
-    #             Self.a(10.5);
-    #         }
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Statement: Call(Self(),Id(a),[FloatLit(10.5)])"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_22"))
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 78))
+    
+    def test79(self):
+        input = """
+            Class A{
+                Var a:Array[Int,5] = Array(1,2,3,4,5);
+            }
+            Class B{
+                Var a:A = New A();
+            }
+            Class C{
+                Var a:B = New B();
+            }
+            Class Program(){
+                main(){
+                    Return;
+                    Var obj:C = New C();
+                    obj.a.a.a[0] = obj.a.a.a[0] + 1 /2 ;
+                    
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 79))
+    
+    def test80(self):
+        input = """
+            Class A{
+                Destructor{
+                    Return;
 
-    # def test_23(self):
-    #     input = """
-    #     Class Program {
-    #         a(a: Int) {
-    #             Return a;
-    #         }
-    #         main(){
-    #             Self.a(10, 20);
-    #         }
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Statement: Call(Self(),Id(a),[IntLit(10),IntLit(20)])"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_23"))
+                }
+            }
+            Class Program{
+                main(){
 
-    # def test_24(self):
-    #     input = """
-    #     Class Program {
-    #         Var a: Array[Int, 4];
-    #         setArr(a: Array[Int, 3]) {
-    #             Self.a = a;
-    #             Return;
-    #         }
-    #         main(){
-    #             Self.setArr(Array(1, 2, 3));
-    #         }
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Statement: AssignStmt(FieldAccess(Self(),Id(a)),Id(a))"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_24"))
+                }
+            }
+             """
+        expect = "Undeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, 80))
+    
+    def test81(self):
+        input = """
+        Class Program {}
+        """
+        expect = "No Entry Point"
+        self.assertTrue(TestChecker.test(input, expect, 81))
 
-    # def test_25(self):
-    #     input = """
-    #     Class Program {
-    #         Var a: Array[Int, 4];
-    #         setArr(a: Array[Int, 4]) {
-    #             Self.a = a;
-    #             Return;
-    #         }
-    #         main(){
-    #             Self.setArr(Array(1, 2, 3));
-    #         }
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Statement: Call(Self(),Id(setArr),[[IntLit(1),IntLit(2),IntLit(3)]])"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_25"))
+    def test82(self):
+        input = """
+        Class Program {
+            main(a: Int) {}
+        }
+        """
+        expect = "No Entry Point"
+        self.assertTrue(TestChecker.test(input, expect, 82))
 
-    # def test_26(self):
-    #     input = """
-    #     Class Program {
-    #         Var a: Array[Int, 4];
-    #         setArr(a: Array[Float, 4]) {
-    #             Self.a = a;
-    #             Return;
-    #         }
-    #         main(){
-    #             Self.setArr(Array(1.2, 2.3, 3.4, 4.5));
-    #         }
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Statement: AssignStmt(FieldAccess(Self(),Id(a)),Id(a))"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_26"))
+    def test83(self):
+        input = """
+        Class A {
+            Val a: A = New A();
+        }
+        Class Program {
+            main() {
+                Val a: A = New A().a;
+                New A().a = a;
+            }
+        }
+        """
+        expect = "Cannot Assign To Constant: AssignStmt(FieldAccess(NewExpr(Id(A),[]),Id(a)),Id(a))"
+        self.assertTrue(TestChecker.test(input, expect, 83))
 
-    # def test_27(self):
-    #     input = """
-    #     Class Program {
-    #         func(a, b: Float) {
-    #             Return b + a;
-    #         }
-    #         main(){
-    #             Var x: Int;
-    #             x = Self.func(5, 5);
-    #         }
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Statement: AssignStmt(Id(x),CallExpr(Self(),Id(func),[IntLit(5),IntLit(5)]))"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_27"))
+    def test_4(self):
+        input = """
+        Class Program {
+            main() {
+                Val a: Int = 5.5;
+            }
+        }
+        """
+        expect = "Type Mismatch In Constant Declaration: ConstDecl(Id(a),IntType,FloatLit(5.5))"
+        self.assertTrue(TestChecker.test(input, expect, "Test_4"))
 
-    # def test_28(self):
-    #     input = """
-    #     Class Program {
-    #         func(a, b: Float) {
-    #             Return b + a;
-    #         }
-    #         main(){
-    #             Var x: Int;
-    #             x = Self.func(5, 5);
-    #         }
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Statement: AssignStmt(Id(x),CallExpr(Self(),Id(func),[IntLit(5),IntLit(5)]))"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_28"))
+    def test_5(self):
+        input = """
+        Class Program {
+            main() {
+                Val a: Int;
+            }
+        }
+        """
+        expect = "Illegal Constant Expression: None"
+        self.assertTrue(TestChecker.test(input, expect, "Test_5"))
 
-    # def test_29(self):
-    #     input = """
-    #     Class Shape {
-    #         Var width: Float;
-    #         Var height: Float;
+    def test_6(self):
+        input = """
+        Class Program {
+            main() {
+                Var a: Int;
+                a = 5.5;
+            }
+        }
+        """
+        expect = "Type Mismatch In Statement: AssignStmt(Id(a),FloatLit(5.5))"
+        self.assertTrue(TestChecker.test(input, expect, "Test_6"))
 
-    #         Constructor(width, height: Float) {
-    #             Self.width = width;
-    #             Self.height = height;
-    #         }
+    def test_7(self):
+        input = """
+        Class Program {
+            Var a: Float;
+            main() {
+                Var a: Int;
+                Self.a = 10;
+                a = 5 + 5.5;
+            }
+        }
+        """
+        expect = "Type Mismatch In Statement: AssignStmt(Id(a),BinaryOp(+,IntLit(5),FloatLit(5.5)))"
+        self.assertTrue(TestChecker.test(input, expect, "Test_7"))
 
-    #         calArea() {
-    #             Return Self.width * Self.height;
-    #         }
-    #     }
+    def test_8(self):
+        input = """
+        Class Program {
+            Var a: Float;
+            main() {
+                Var a: Int;
+                Self.a = 10;
+                a = 5 + 5.5;
+            }
+        }
+        """
+        expect = "Type Mismatch In Statement: AssignStmt(Id(a),BinaryOp(+,IntLit(5),FloatLit(5.5)))"
+        self.assertTrue(TestChecker.test(input, expect, "Test_8"))
+
+    def test_9(self):
+        input = """
+        Class Program {
+            Var a: Float;
+            main() {
+                Self.a = 10;
+                a = 5 + 5.5;
+            }
+        }
+        """
+        expect = "Undeclared Identifier: a"
+        self.assertTrue(TestChecker.test(input, expect, "Test_9"))
+
+    def test_10(self):
+        input = """
+        Class Program {
+            Var a: Float;
+            main() {
+                Self.b = 10;
+            }
+        }
+        """
+        expect = "Undeclared Attribute: b"
+        self.assertTrue(TestChecker.test(input, expect, "Test_10"))
+
+    def test_11(self):
+        input = """
+        Class B : A{}
+        Class Program {
+            Var a: Float;
+            main() {
+                Self.a = 10;
+            }
+        }
+        """
+        expect = "Undeclared Class: A"
+        self.assertTrue(TestChecker.test(input, expect, "Test_11"))
+
+    def test_12(self):
+        input = """
+        Class Program {
+            Val a: Float = 5;
+            main() {
+                Self.a();
+            }
+        }
+        """
+        expect = "Undeclared Method: a"
+        self.assertTrue(TestChecker.test(input, expect, "Test_12"))
+
+    def test_13(self):
+        input = """
+        Class Program {
+            Val a: Float = 5;
+            main() {
+                Var a: Program;
+                a.a = 10;
+            }
+        }
+        """
+        expect = "Cannot Assign To Constant: AssignStmt(FieldAccess(Id(a),Id(a)),IntLit(10))"
+        self.assertTrue(TestChecker.test(input, expect, "Test_13"))
+
+    def test_14(self):
+        input = """
+        Class Program {
+            Var a: Float;
+            a(a: Int) {
+                Return Self.a;
+            }
+            main(){}
+        }
+        """
+        expect = "Redeclared Method: a"
+        self.assertTrue(TestChecker.test(input, expect, "Test_14"))
+
+    def test_15(self):
+        input = """
+        Class Program {
+            a(a: Int) {
+                Var a: Float;
+            }
+            main(){}
+        }
+        """
+        expect = "Redeclared Variable: a"
+        self.assertTrue(TestChecker.test(input, expect, "Test_15"))
+
+    def test_16(self):
+        input = """
+        Class Program {}
+        Class Program {
+            a(a: Int) {
+            }
+            main(){}
+        }
+        """
+        expect = "Redeclared Class: Program"
+        self.assertTrue(TestChecker.test(input, expect, "Test_16"))
+
+    def test_17(self):
+        input = """
+        Class Program {
+            a(a: Int) {}
+            Var a: Float;
+            main(){}
+        }
+        """
+        expect = "Redeclared Attribute: a"
+        self.assertTrue(TestChecker.test(input, expect, "Test_17"))
+
+    def test_18(self):
+        input = """
+        Class Program {
+            a(a: Int; a: Float) {}
+            main(){}
+        }
+        """
+        expect = "Redeclared Parameter: a"
+        self.assertTrue(TestChecker.test(input, expect, "Test_18"))
+
+    def test_19(self):
+        input = """
+        Class Program {
+            a(a: Int) {
+                Val a: Float = 5.5;
+            }
+            main(){}
+        }
+        """
+        expect = "Redeclared Constant: a"
+        self.assertTrue(TestChecker.test(input, expect, "Test_19"))
+
+    def test_20(self):
+        input = """
+        Class Program {
+            a(a: Int) {
+                Var b: Int = 5;
+                Val c: Float = 5.5e3;
+                b = 1 + c;
+            }
+            main(){}
+        }
+        """
+        expect = "Type Mismatch In Statement: AssignStmt(Id(b),BinaryOp(+,IntLit(1),Id(c)))"
+        self.assertTrue(TestChecker.test(input, expect, "Test_20"))
+
+    def test_21(self):
+        input = """
+        Class Program {
+            a(a: Int) {
+                Var b: String = "Hello ";
+                b = b + a;
+            }
+            main(){}
+        }
+        """
+        expect = "Type Mismatch In Expression: BinaryOp(+,Id(b),Id(a))"
+        self.assertTrue(TestChecker.test(input, expect, "Test_21"))
+
+    def test_22(self):
+        input = """
+        Class Program {
+            a(a: Int) {
+                Return a;
+            }
+            main(){
+                Self.a(10.5);
+            }
+        }
+        """
+        expect = "Type Mismatch In Statement: Call(Self(),Id(a),[FloatLit(10.5)])"
+        self.assertTrue(TestChecker.test(input, expect, "Test_22"))
+
+    def test_23(self):
+        input = """
+        Class Program {
+            a(a: Int) {
+                Return a;
+            }
+            main(){
+                Self.a(10, 20);
+            }
+        }
+        """
+        expect = "Type Mismatch In Statement: Call(Self(),Id(a),[IntLit(10),IntLit(20)])"
+        self.assertTrue(TestChecker.test(input, expect, "Test_23"))
+
+    def test_24(self):
+        input = """
+        Class Program {
+            Var a: Array[Int, 4];
+            setArr(a: Array[Int, 3]) {
+                Self.a = a;
+                Return;
+            }
+            main(){
+                Self.setArr(Array(1, 2, 3));
+            }
+        }
+        """
+        expect = "Type Mismatch In Statement: AssignStmt(FieldAccess(Self(),Id(a)),Id(a))"
+        self.assertTrue(TestChecker.test(input, expect, "Test_24"))
+
+    def test_25(self):
+        input = """
+        Class Program {
+            Var a: Array[Int, 4];
+            setArr(a: Array[Int, 4]) {
+                Self.a = a;
+                Return;
+            }
+            main(){
+                Self.setArr(Array(1, 2, 3));
+            }
+        }
+        """
+        expect = "Type Mismatch In Statement: Call(Self(),Id(setArr),[[IntLit(1),IntLit(2),IntLit(3)]])"
+        self.assertTrue(TestChecker.test(input, expect, "Test_25"))
+
+    def test_26(self):
+        input = """
+        Class Program {
+            Var a: Array[Int, 4];
+            setArr(a: Array[Float, 4]) {
+                Self.a = a;
+                Return;
+            }
+            main(){
+                Self.setArr(Array(1.2, 2.3, 3.4, 4.5));
+            }
+        }
+        """
+        expect = "Type Mismatch In Statement: AssignStmt(FieldAccess(Self(),Id(a)),Id(a))"
+        self.assertTrue(TestChecker.test(input, expect, "Test_26"))
+
+    def test_27(self):
+        input = """
+        Class Program {
+            func(a, b: Float) {
+                Return b + a;
+            }
+            main(){
+                Var x: Int;
+                x = Self.func(5, 5);
+            }
+        }
+        """
+        expect = "Type Mismatch In Statement: AssignStmt(Id(x),CallExpr(Self(),Id(func),[IntLit(5),IntLit(5)]))"
+        self.assertTrue(TestChecker.test(input, expect, "Test_27"))
+
+    def test_28(self):
+        input = """
+        Class Program {
+            func(a, b: Float) {
+                Return b + a;
+            }
+            main(){
+                Var x: Int;
+                x = Self.func(5, 5);
+            }
+        }
+        """
+        expect = "Type Mismatch In Statement: AssignStmt(Id(x),CallExpr(Self(),Id(func),[IntLit(5),IntLit(5)]))"
+        self.assertTrue(TestChecker.test(input, expect, "Test_28"))
+
+    def test_29(self):
+        input = """
+        Class Shape {
+            Var width: Float;
+            Var height: Float;
+
+            Constructor(width, height: Float) {
+                Self.width = width;
+                Self.height = height;
+            }
+
+            calArea() {
+                Return Self.width * Self.height;
+            }
+        }
         
-    #     Class Program {
-    #         main(){
-    #             Var shape: Shape = New Shape(5, 5.5);
-    #             Var res: Int;
-    #             res = shape.calArea();
-    #         }
-    #     }
-    #     """
-    #     expect = "Type Mismatch In Statement: AssignStmt(Id(res),CallExpr(Id(shape),Id(calArea),[]))"
-    #     self.assertTrue(TestChecker.test(input, expect, "Test_29"))
+        Class Program {
+            main(){
+                Var shape: Shape = New Shape(5, 5.5);
+                Var res: Int;
+                res = shape.calArea();
+            }
+        }
+        """
+        expect = "Type Mismatch In Statement: AssignStmt(Id(res),CallExpr(Id(shape),Id(calArea),[]))"
+        self.assertTrue(TestChecker.test(input, expect, "Test_29"))

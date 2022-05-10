@@ -1,0 +1,14 @@
+
+            Class A{
+                Val a: A;
+
+                program(){
+
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             

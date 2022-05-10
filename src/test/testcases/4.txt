@@ -1,29 +1,26 @@
 
         Class A{
-            Val $atr: Int = 1;
-            Var $atrr: String = "Hello";
-            Val a:Float = 2;
-            Var b: Boolean = True;
-            $atr(){
-                Return 5;
-            }
-            a(){
-                Return 2.0;
-            }
+            Var $static:Float = 1;
+            Val $obj:A = New A();
+            Val obj:A = New A();
+            Var a: Int = 5;
+            Var b: Int = 1 + A::$obj.a;
+            Var c: Int = 1 + Self.obj.a;
             method(){
-                Val A:A = New A();
-                Var cal: Int = 1;
-                Var f:Float = 5.6;
-                A::$atrr = 123;
-                A.b = False;
-                cal = A::$atr() + 5;
-                f = A.a() + 3.0;
-                Return cal;
+                Val a: Int = 5;
+                Var b: Int = 1 + a;
+                Var A:A;
+                A = New A();
+                A.a = 1;
+                A::$static = 6;
             }
         }
         Class Program{
             main(){
                 Return;
             }
+        }
+        Class B{
+
         }
         

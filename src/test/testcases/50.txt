@@ -1,0 +1,19 @@
+
+            Class B{
+                $method(){
+                    Return "Hello";
+                }
+            }
+            Class A:B{
+               
+
+                program(){
+                    Val a: String = "Hello" +. B::$method();
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             

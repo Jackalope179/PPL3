@@ -1,9 +1,1 @@
-Class A{
-    a
-    $a
-}
-
-{
-    Var A: A;
-    A::$a
-}
+Type Mismatch In Statement: Return(StringLit(Hello))

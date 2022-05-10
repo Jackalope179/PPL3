@@ -1,1 +1,1 @@
-Type Mismatch In Statement: AssignStmt(Id(arr),CallExpr(Self(),Id(Method),[NewExpr(Id(B),[StringLit(Hello),StringLit(Hello)]),Id(obj)]))
+Type Mismatch In Statement: Return()

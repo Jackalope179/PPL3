@@ -1,0 +1,13 @@
+
+        Class A{
+            method(){
+                Val a: Array[Array[Int,2], 2] = Array(Array(1,2), Array(1,2));
+                Var b:Int = a[0][1];
+            }
+        }
+        Class Program{
+            main(){
+                Return;
+            }
+        }
+        

@@ -7,6 +7,7 @@ import copy
 from AST import * 
 from Visitor import *
 from StaticError import *
+from main.d96.utils.AST import FieldAccess
 
 
 
@@ -35,9 +36,12 @@ class StaticChecker(BaseVisitor):
         self.error_const_decl = False
         self.check_in_loop = False
         self.check_inner_array = False
+        self.is_in_destructor = False
+        self.is_in_constructor = False
         self.is_in_main = False
         self.is_program = False
         self.previous_return = 0
+        self.check_main_return = 0
 
         self.ast = ast
         self.global_env = []
@@ -57,7 +61,7 @@ class StaticChecker(BaseVisitor):
         return ""
 
     def visitClassDecl(self, ast,c):
-        if ast.classname.name in ["Program", "Constructor", "Destructor"]:
+        if ast.classname.name in ["Program"]:
             self.is_program = True
         else:
             self.is_program = False
@@ -123,7 +127,8 @@ class StaticChecker(BaseVisitor):
  
         '''Check with const decl'''
         if kind == "Val":
-            
+            if value is None:
+                raise Undeclared(Constant(), name)
         
             self.check_const_decl = True
             value = self.visit(value,c) #=> Symbol
@@ -132,7 +137,7 @@ class StaticChecker(BaseVisitor):
             if value is None: raise IllegalConstantExpression(None)
 
             '''Visit value and check if operands is const'''
-            if isinstance(value, Id) or isinstance(value, NullLiteral) or isinstance(value, SelfLiteral):
+            if isinstance(value, Id) or isinstance(value, NullLiteral) or isinstance(value, SelfLiteral) or value.kind == "Method":
                     raise IllegalConstantExpression(ast.decl.value)
 
             if self.error_const_decl:
@@ -158,10 +163,21 @@ class StaticChecker(BaseVisitor):
         return sym
 
     def visitMethodDecl(self, ast,c):
+        if ast.name.name == "Destructor":
+            self.is_in_destructor = True
+        else:
+            self.is_in_destructor = False
+
         if ast.name.name == "main":
             self.is_in_main = True
         else:
             self.is_in_main = False
+        
+        if ast.name.name == "Constructor":
+            self.is_in_constructor = True
+        else:
+            self.is_in_constructor = False
+
         env = []
         '''Copy c to env'''
         env = copy.deepcopy(c)
@@ -177,6 +193,10 @@ class StaticChecker(BaseVisitor):
             self.visitParam(param_,env)
         
         temp = self.visitBody(ast.body,name,env)
+
+        if self.is_program and ast.name.name == "main" and not self.check_main_return:
+            raise NoEntryPoint()
+
         result = Symbol(ast.name.name,"Method", MType([self.visit(p.varType,c).mtype for p in ast.param], temp))
         c[0]["array"][0] = [result] + c[0]["array"][0]
         
@@ -232,7 +252,7 @@ class StaticChecker(BaseVisitor):
         if ast.value is None: raise IllegalConstantExpression(None)
 
         '''Visit value and check if operands is const'''
-        if isinstance(ast.value, Id) or isinstance(ast.value, NullLiteral) or isinstance(ast.value, SelfLiteral):
+        if isinstance(ast.value, Id) or isinstance(ast.value, NullLiteral) or isinstance(ast.value, SelfLiteral) or value.kind == "Method":
             raise IllegalConstantExpression(ast.value)
         
         if self.error_const_decl:
@@ -297,11 +317,10 @@ class StaticChecker(BaseVisitor):
         if isinstance(rhs, Atype):
             rhs = rhs.atype
 
-   
-
-            
         '''Check constdecl'''
         if self.check_const_decl:
+            if isinstance(ast.left, CallExpr) or isinstance(ast.right, CallExpr):
+                self.error_const_decl = True
             if isinstance(ast.left, Id) or isinstance(ast.right, Id):
                 self.error_const_decl = True
             if isinstance(ast.left, NullLiteral) or isinstance(ast.right, NullLiteral):
@@ -356,7 +375,7 @@ class StaticChecker(BaseVisitor):
             if typ == 2: return Symbol(mtype=2, kind = "UnaryOp")
             raise TypeMismatchInExpression(ast)
         if self.check_const_decl:
-            if not isinstance(ast.body, BinaryOp) and not isinstance(ast.body, UnaryOp):
+            if not isinstance(ast.body, BinaryOp) and not isinstance(ast.body, UnaryOp) and not isinstance(ast.body, FieldAccess):
                     self.error_const_decl = True
 
     def visitNewExpr(self, ast,c):
@@ -371,6 +390,7 @@ class StaticChecker(BaseVisitor):
             if len(ast.param) > 0: raise TypeMismatchInExpression(ast)
         else:
             if len(ast.param) != len(sym.mtype.partype): raise TypeMismatchInExpression(ast)
+            
             for i in range(len(ast.param)):
                 if not self.checkTypeOfSide(sym.mtype.partype[i],self.visit(ast.param[i],c).mtype,c, self.visit(ast.param[i],c).mtype):
                     raise TypeMismatchInExpression(ast)
@@ -383,14 +403,30 @@ class StaticChecker(BaseVisitor):
 
     def visitArrayCell(self, ast,c): 
         array = self.visit(ast.arr, c)
-        '''E1[E2] => E1 must be array type'''
         if not isinstance(array.mtype, Atype): raise TypeMismatchInExpression(ast)
+
+        # Atype(Atype(Int))
+        arr_typ = []
+        cur_array = array.mtype
+        while(True):
+            if type(cur_array) is Atype:
+                arr_typ  += [cur_array]
+                cur_array = cur_array.atype
+            else:
+                arr_typ += [cur_array]
+                break
+        return_typ = 0
+
+        if len(ast.idx) >= len(arr_typ):
+            raise TypeMismatchInExpression(ast)
+        else:
+            return_typ = arr_typ[len(ast.idx)]
 
         '''E1[E2] => E2 must be int'''
         for idx in ast.idx:
             if self.visit(idx, c).mtype != 1: 
                 raise TypeMismatchInExpression(ast)
-        return Symbol(mtype=array.mtype.atype, kind = "Var")
+        return Symbol(mtype=return_typ, kind = "Var")
 
     def IsStatic(self, name):
         if name[0] == "$" or name == "main": return True
@@ -467,7 +503,6 @@ class StaticChecker(BaseVisitor):
         name = ast.method.name
         sym = self.checkAccess(ast, name, c, Method(), "Method")
         if sym.mtype.rettype == 6: 
-            print("Hello")
             raise TypeMismatchInExpression(ast)
 
         '''Check number of argument'''
@@ -532,8 +567,6 @@ class StaticChecker(BaseVisitor):
         if lhs_type == 6: raise TypeMismatchInStatement(ast)
         
         if not self.checkTypeOfSide(lhs_type, rhs_type, c, self.visit(ast.exp,c).mtype):
-            print(lhs_type, rhs_type)
-            print("Hello")
             raise TypeMismatchInStatement(ast)
 
         self.visit(ast.exp,c)
@@ -578,14 +611,22 @@ class StaticChecker(BaseVisitor):
             raise MustInLoop(ast)
 
     def visitReturn(self, ast,c):
+        if self.is_in_destructor :
+            raise TypeMismatchInStatement(ast)
+
         if ast.expr == None: return Symbol(mtype= 6)
         typ = self.visit(ast.expr, c)
         if self.is_in_main and self.is_program and typ.mtype != 6:
             raise TypeMismatchInStatement(ast)
+        if self.is_in_constructor and typ.mtype != 6:
+            raise TypeMismatchInStatement(ast)
+        if self.is_in_main:
+            self.check_main_return = True
         if self.previous_return == 0:
             self.previous_return = typ.mtype
         elif self.previous_return != typ.mtype:
             raise TypeMismatchInStatement(ast)
+
         return typ
     
     def checkTypeOfSide(self, lhs, rhs, c, rhs_literal):
