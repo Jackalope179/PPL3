@@ -1,0 +1,8 @@
+
+        Class Program {
+            a(a: Int) {
+                Var a: Float;
+            }
+            main(){}
+        }
+        

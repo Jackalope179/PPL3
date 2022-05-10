@@ -1,0 +1,23 @@
+
+            Class A{
+                Val a:Boolean = True;
+            }
+            Class B{
+                Val a:A = New A();
+            }
+            Class C{
+                Val a:B = New B();
+            }
+            Class Program(){
+                main(){
+                    Return;
+                    Val obj:C = New C();
+                    
+                    If(obj.a.a.a){
+
+                    } Else{
+
+                    }
+                }
+            }
+            

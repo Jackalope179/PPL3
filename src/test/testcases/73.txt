@@ -1,0 +1,29 @@
+
+            Class A{
+                $method(){
+                    Return 1;
+                }
+            }
+            Class B{
+                $method(){
+                    Return A::$method();
+                }
+            }
+            Class C{
+                $method(){
+                    Return B::$method();
+                }
+            }
+            Class Program(){
+                method(){
+                    If(True){
+                        Return C::$method();
+                    } Else{
+                        Return 1;
+                    }
+                }
+                main(){
+                    Return;
+                }
+            }
+             

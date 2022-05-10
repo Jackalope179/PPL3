@@ -1,0 +1,9 @@
+
+        Class Program {
+            Val a: Float = 5;
+            main() {
+                Var a: Program;
+                a.a = 10;
+            }
+        }
+        

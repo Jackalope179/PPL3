@@ -1,0 +1,18 @@
+
+            Class B{
+                main(){
+                    Return "Hello";
+                }
+            }
+            Class A{
+
+                program(){
+                    Return;
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+             

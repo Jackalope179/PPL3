@@ -1,0 +1,15 @@
+
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+            Class Base{
+                Var $a:Int = 5;
+            }
+            Class A:Base{
+                method(){
+                    A::$a = 5;   
+                }
+            }
+             

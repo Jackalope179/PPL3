@@ -1,0 +1,19 @@
+
+            Class Program(){
+                main(){
+                    {
+                        Var i:Int = 5;
+                        Foreach(i In 1 .. 100){
+                            Break;
+                            {
+                                Break;
+                            }
+                        }
+                        {
+                            Break;
+                        }
+                    }
+                    Return;
+                }
+            }
+             

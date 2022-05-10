@@ -1,0 +1,18 @@
+
+            Class A{
+
+            }
+            Class B{
+                main(){
+                    Var a:Array[Array[Int,1],1];
+                    Var b:Array[Array[Float,1],1];
+                    Var c:Float = a[0][0] + b[0][0];
+                    Var d:Array[Array[String,1],1];
+                    Var e:Boolean = d[0][0] ==. "Hello";
+                    Var f:Float = a[0][0] + b[0][0] - c / a[0][0] * b[0];
+                    Var g:Boolean = 1 > 5;
+                    Var w:Boolean = g && e || g;
+                    b = -a;
+                }
+            }
+            

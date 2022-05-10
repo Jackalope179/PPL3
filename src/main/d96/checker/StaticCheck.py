@@ -41,7 +41,7 @@ class StaticChecker(BaseVisitor):
         self.is_in_main = False
         self.is_program = False
         self.previous_return = 0
-        self.check_main_return = 0
+        self.check_main_return = False
 
         self.ast = ast
         self.global_env = []
@@ -74,7 +74,9 @@ class StaticChecker(BaseVisitor):
                 raise Redeclared(Class(),ast.classname.name)
             '''Check Undeclare parent'''
             if parent_name == class_["name"]:
+                print(parent_name)
                 undeclare_parent = False
+
         if parent_name and undeclare_parent: 
             raise Undeclared(Class(),parent_name) 
         
@@ -138,7 +140,7 @@ class StaticChecker(BaseVisitor):
 
             '''Visit value and check if operands is const'''
             if isinstance(value, Id) or isinstance(value, NullLiteral) or isinstance(value, SelfLiteral) or value.kind == "Method":
-                    raise IllegalConstantExpression(ast.decl.value)
+                raise IllegalConstantExpression(ast.decl.value)
 
             if self.error_const_decl:
                 raise IllegalConstantExpression(ast.decl.value)
@@ -244,6 +246,9 @@ class StaticChecker(BaseVisitor):
         if typ.kind == "ClassType":
             if not self.checkExistingClassName(typ.mtype, c): raise Undeclared(Class(),typ.mtype)
         
+        if not ast.value or type(ast.value) is NullLiteral:
+            raise Undeclared(Constant(), name)
+
         self.check_const_decl = True
         value = self.visit(ast.value,c) #=> Symbol
         self.check_const_decl = False
@@ -252,7 +257,7 @@ class StaticChecker(BaseVisitor):
         if ast.value is None: raise IllegalConstantExpression(None)
 
         '''Visit value and check if operands is const'''
-        if isinstance(ast.value, Id) or isinstance(ast.value, NullLiteral) or isinstance(ast.value, SelfLiteral) or value.kind == "Method":
+        if isinstance(ast.value, Id) or isinstance(ast.value, SelfLiteral) or value.kind == "Method":
             raise IllegalConstantExpression(ast.value)
         
         if self.error_const_decl:
@@ -517,6 +522,7 @@ class StaticChecker(BaseVisitor):
     def visitFieldAccess(self, ast,c):
         '''Class::<$static>'''
 
+
         '''Object.<att>'''
         multability = "Val"
         '''if obj is class'''
@@ -524,9 +530,7 @@ class StaticChecker(BaseVisitor):
             for class_ in c:
                 if ast.obj.name == class_["name"]:
                     check_same_name_att, _ = self.checkExistingIdFunction(c[0]["array"][:-1], ast.obj.name)
-
                     check, sym = self.checkExistingMember([class_["array"][-1]], ast.fieldname.name, "Val")
-
                     if check: multability = sym.kind
                     else:
                         if not check_same_name_att:
@@ -535,6 +539,9 @@ class StaticChecker(BaseVisitor):
                         raise IllegalMemberAccess(ast)
                     return sym
 
+        if isinstance(ast.obj, Id) and self.IsStatic(ast.fieldname.name):
+            raise Undeclared(Class(), ast.obj.name)
+            
         '''E is not a className'''   
         '''E must be in object in class type'''
         obj_ = self.visit(ast.obj,c)  #=>Symbol
@@ -614,14 +621,15 @@ class StaticChecker(BaseVisitor):
         if self.is_in_destructor :
             raise TypeMismatchInStatement(ast)
 
+        if self.is_in_main:
+            self.check_main_return = True
+
         if ast.expr == None: return Symbol(mtype= 6)
         typ = self.visit(ast.expr, c)
         if self.is_in_main and self.is_program and typ.mtype != 6:
             raise TypeMismatchInStatement(ast)
         if self.is_in_constructor and typ.mtype != 6:
             raise TypeMismatchInStatement(ast)
-        if self.is_in_main:
-            self.check_main_return = True
         if self.previous_return == 0:
             self.previous_return = typ.mtype
         elif self.previous_return != typ.mtype:

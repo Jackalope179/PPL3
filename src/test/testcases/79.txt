@@ -1,0 +1,19 @@
+
+            Class A{
+                Var a:Array[Int,5] = Array(1,2,3,4,5);
+            }
+            Class B{
+                Var a:A = New A();
+            }
+            Class C{
+                Var a:B = New B();
+            }
+            Class Program{
+                main(){
+                    Return;
+                    Var obj:C = New C();
+                    obj.a.a.a[0] = obj.a.a.a[0] + 1 / 2 ;
+                    
+                }
+            }
+             

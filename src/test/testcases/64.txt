@@ -1,0 +1,18 @@
+
+            Class A{
+                Var $a:Int = 5;
+                Val $b: Int = 6;
+                Val a:Int = 5;
+                program(){
+                    Val a:A = New A();
+                    Val obj:A = New A();
+                    A::$a = A::$a;
+                    obj.att = 5;
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+            

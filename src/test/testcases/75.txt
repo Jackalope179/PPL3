@@ -1,0 +1,12 @@
+
+            Class A{
+                Val a:Boolean = True;
+            }
+            
+            Class Program{
+                main(){
+                    Return;
+                    Var a:Int = C::$a;
+                }
+            }
+             

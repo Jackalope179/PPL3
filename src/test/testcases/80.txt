@@ -1,0 +1,12 @@
+
+            Class A{
+                Destructor(){
+                    Return;
+                }
+            }
+            Class Program{
+                main(){
+
+                }
+            }
+            

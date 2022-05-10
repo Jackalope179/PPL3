@@ -1,0 +1,21 @@
+
+            Class A{
+                program(){
+                }
+                
+                program_(){
+                    Return;
+                }
+
+                main(){
+                    Val a: A = New A();
+                    a.program();
+                    a.program_();
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                }
+            }
+            

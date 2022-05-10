@@ -1,0 +1,19 @@
+
+            Class A{
+                Val a:Array[Int,5] = Array(1,2,3,4,5);
+            }
+            Class B{
+                Val a:A = New A();
+            }
+            Class C{
+                Val a:B = New B();
+            }
+            Class Program{
+                main(){
+                    Return;
+                    Var obj:C = New C();
+                    Val a:Int = obj.a.a.a[0];
+
+                }
+            }
+             
