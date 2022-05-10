@@ -1,10 +1,15 @@
 
         Class A{
-            Val a:Int;
-            
-            getName(a,b:String; c:Int){
-                Val e:String;
-                Val d:A = New X();
+            method(){
+                Return 1;
+            }
+            main(a,b:String; c:String){
+                Val obj: A = New A();
+                Self.method();
+            }
+        }
+        Class Program{
+            main(){
 
             }
         }

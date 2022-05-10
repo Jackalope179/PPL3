@@ -1,11 +1,30 @@
 
-        Class A{
-            Val a:Int;
-            
-            getName(a,b:String; c:Int){
-                Val e:String;
-                Val d:A = New X();
-
+        Class C{
+            Var c:Int = 5;
+        }
+        Class B{
+            Val c:C = New C();
+        }
+        Class A:B{
+            Var att:Int = 5;
+            Var b:B = New B();
+            att(){}
+            method(){
+                Var obj: B= New B();
+                Self.att = obj.c.c + 1;
+                Var a:Int = 1;
+                Foreach(a In obj.c.c .. obj.c.c){
+                    Var arr: Array[Boolean,5];
+                    If (arr[0]){
+                        Self.att = 1;
+                        Self.att = Self.att() + 5;
+                    }
+                }
+            }
+        }
+        Class Program{
+            main(){
+                Return;
             }
         }
         

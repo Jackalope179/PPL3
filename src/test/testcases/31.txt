@@ -1,10 +1,12 @@
 
         Class A{
-            Val a:Int;
-            
-            getName(a,b:String; c:Int){
-                Val e:String;
-                Val d:A = New X();
+            Var a:Array[Int,5] = Array(1,2,3,4,5);
+            method(){
+                Val b: Int = Self.a[0];
+            }
+        }
+        Class Program{
+            main(){
 
             }
         }

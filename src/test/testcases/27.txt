@@ -1,11 +1,28 @@
 
+        Class B{
+            Var $c:Int = 5;
+            Val d:Int = 5;
+            $c(){
+                Return 1;
+            }
+            d(){
+                Return 5;
+            }
+        }
         Class A{
-            Val a:Int;
+            Val a:Int = 5;
             
             getName(a,b:String; c:Int){
-                Val e:String;
-                Val d:A = New X();
+                c = B::$c + B::$c();
+                c = B.d + B::$d();
+                c = (New B()).d + 5 + (New B()).d();
+                c = B::$c() + 1;
 
+            }
+        }
+        Class Program{
+            main(){
+                Return;
             }
         }
         

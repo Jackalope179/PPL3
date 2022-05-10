@@ -1,0 +1,31 @@
+
+        Class Program{
+            main(){
+                Var i: Int = 1;
+                Foreach( i In 1 .. 100){
+                    Return ;
+                }
+                If (True){
+                    Return ;
+                } Elseif(False){
+                    Return ;
+                }
+            Return;
+            }
+        }
+        Class A{
+            main(){
+               Return "Hello";
+            }
+            method(){
+                Val a:Float = (1 +2.0 - 2) / 4.0 * 5;
+                Val b:Int = 1%2;
+                Val c:Boolean = "String" ==. "Hello";
+                Val f:Boolean = "String" ==. "Hello";
+                Val d:String = "String" +. "Hello";
+                Var e:Boolean = (!c || f) && c ;
+            }
+        }
+
+            
+        

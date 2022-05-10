@@ -1,7 +1,13 @@
 #include <iostream>
 using namespace std;
-int main(){
-    float a = 1.0f;
-    int b = 2;
-    b = a;
+class A{
+    public:
+    int a;
+    void a(){
+        cout <<"a";
+    }
+};
+main(){
+    A obj;
+    obj.a();
 }

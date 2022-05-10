@@ -1,0 +1,37 @@
+
+                Class Program{
+                    main() { 
+                        Return;
+                    }
+                }
+
+               Class A {
+                   Var $a: Int = 5;
+                   Var kk: Int = 5;
+                   Var ss: String = "Bug";
+                   A(){
+                       Return 1;
+                   }
+                   Var A:Int = 1;
+               }
+
+               Class C{
+                   Var x, y: Int = 4, 5;
+                   Var tmp: Float;
+                   A(){
+                       Return 1;
+                   }
+                   Val A:Int = 1;
+                   
+                   method(){
+                        Var A: A;
+                        Self.tmp = A.kk + 12;
+                        A.ss = "yeyeye";
+                        Self.tmp = A::$a + 10;
+                        A::$a = A.kk + 12 + Self.A() + Self.A - A.A() + A.A;
+                        ##* 1 / Self.A -a.A(); ##
+                        ##* 1 / Self.A - A.A() + A.A##
+                   }
+               }
+
+                

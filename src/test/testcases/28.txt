@@ -1,11 +1,13 @@
 
         Class A{
-            Val a:Int;
+            Var $a:Int = 5;
             
             getName(a,b:String; c:Int){
-                Val e:String;
-                Val d:A = New X();
-
+                Val obj:A= New A();
+                obj::$a = 5;
             }
+        }
+        Class Program{
+            main(){}
         }
         

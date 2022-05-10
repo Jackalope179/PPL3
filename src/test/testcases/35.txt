@@ -1,0 +1,27 @@
+
+        Class A{
+            Val $a:Int = 5;
+        }
+        Class Program{
+            program(){
+                Var a:A = New A();
+                Var arr: Array[Boolean,4];
+                If(arr[0]){
+                    Return A::$a;
+                } Else{
+                    Val c:Int = 6;
+                    {
+                        Return c;
+                    }
+                    Return 5;
+                }
+                Return 7;
+                c = c + 1;
+            }
+            main(){
+                Return;
+            }
+            
+        }
+
+        

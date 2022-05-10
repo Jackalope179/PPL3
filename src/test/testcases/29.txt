@@ -1,11 +1,10 @@
 
         Class A{
-            Val a:Int;
+            Var a:Int;
             
             getName(a,b:String; c:Int){
-                Val e:String;
-                Val d:A = New X();
-
+                Var obj: Int = 5;
+                obj.a = 5;
             }
         }
         

@@ -1,10 +1,13 @@
 
         Class A{
-            Val a:Int;
+            Val a:Int = 5;
             
             getName(a,b:String; c:Int){
-                Val e:String;
-                Val d:A = New X();
+                Val hello: Array[Array[String,2],3] = Array(Array("a", "b"), Array("c", "d"));
+            }
+        }
+        Class Program{
+            main(){
 
             }
         }

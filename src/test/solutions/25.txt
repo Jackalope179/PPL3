@@ -1,1 +1,1 @@
-Illegal Constant Expression: None
+Type Mismatch In Constant Declaration: ConstDecl(Id(hello),ArrayType(3,ArrayType(2,StringType)),[[StringLit(a),StringLit(b)],[StringLit(c),StringLit(d)]])

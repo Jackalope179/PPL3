@@ -1,11 +1,17 @@
 
         Class A{
-            Val a:Int;
-            
+            Var a:Int = 5;
+            a(){
+                Return 1;
+            }
             getName(a,b:String; c:Int){
-                Val e:String;
-                Val d:A = New X();
-
+                A.a = 5 + 1;
+            }
+            Var a:String;
+        }
+        Class Program{
+            main(){
+                Return;
             }
         }
         

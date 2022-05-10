@@ -1,0 +1,31 @@
+
+        Class B{
+            Constructor(a,b:Int; c:String){
+                Return;
+            }
+            Val b:B = New B(1,2,"Hoang");
+            Val c:B = Self.b;
+            Var $c:B = Self.c;
+        }
+        Class Program{
+            main(){
+                Val b:B = New B(1,2,"Hoang").c;
+                {
+                    Val b: B = B::$c;
+                    {
+                        B::$c = b.c;
+                        B::$c = b;
+                        B::$c = b.b;
+                        Val b: B = New B(1,2.0);
+                    }
+                }
+                Return;
+            }
+        }
+
+        Class A{
+            main(){
+                Return 1;
+            }
+        }
+        

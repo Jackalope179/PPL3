@@ -1,0 +1,21 @@
+
+        Class Program{
+            main(){
+                Var i: Int = 1;
+                Foreach( i In 1 .. 100){
+                    Return ;
+                }
+                If (True){
+                    Return ;
+                } Elseif(False){
+                    Return ;
+                }
+            Return;
+            }
+        }
+        Class A{
+            main(){
+               Return "Hello";
+            }
+        }
+        
