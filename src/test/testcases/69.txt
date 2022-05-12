@@ -8,7 +8,7 @@
             Class C{
                 Val a:B = New B();
             }
-            Class Program(){
+            Class Program{
                 main(){
                     Return;
                     Val obj:C = New C();

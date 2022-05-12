@@ -1,5 +1,5 @@
 
-            Class Program(){
+            Class Program{
                 main(){
                     {
                         Var i:Int = 5;

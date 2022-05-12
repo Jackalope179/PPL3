@@ -14,7 +14,7 @@
                     Return B::$method();
                 }
             }
-            Class Program(){
+            Class Program{
                 method(){
                     If(True){
                         Return C::$method();
