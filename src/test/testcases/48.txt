@@ -1,9 +1,15 @@
 
             Class A{
-               Val a: Int;
+                Val a: Array[Array[String,1],2] = Array(Array("a"), Array("b"));
+                Val b: Array[Array[Array[Int,1],1],1] = Array(Array(Array(1)));
+                Var c: Array[Array[Array[Float,1],1],1] = Array(Array(Array(1.0)));
+                Var d: Array[Array[Array[Array[Float, 1],1],1],1] = Array(Array(Array(Array(1.0))));
 
                 program(){
-
+                    Val a:String = Self.a[0][0];
+                    Val b:Int = Self.b[0][0][0];
+                    Self.c[0][0][0] = Self.b[0][0][0];
+                    Self.c[0] = Self.d[0][0];
                 }
             }
             Class Program{

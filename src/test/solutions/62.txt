@@ -1,1 +1,1 @@
-Undeclared Class: a
+Illegal Member Access: FieldAccess(Id(a),Id($a))

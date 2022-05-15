@@ -1,9 +1,8 @@
 
         Class Program {
-            a(a: Int) {
-                Var b: String = "Hello ";
-                b = b + a;
+            main(){
             }
-            main(){}
+            Var myVar: String = "Hello";
+            Var myVar: Int;
         }
         

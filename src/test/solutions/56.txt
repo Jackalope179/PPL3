@@ -1,1 +1,1 @@
-Type Mismatch In Constant Declaration: AttributeDecl(Instance,ConstDecl(Id(a),ClassType(Id(A)),NullLiteral()))
+Undeclared Constant: a

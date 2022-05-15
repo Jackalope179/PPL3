@@ -1,8 +1,20 @@
 
         Class A{
+            Val method:Int = 1;
+            Var method_:Int = 5;
             method(){
-                Val a: Array[Array[Int,2], 2] = Array(Array(1,2), Array(1,2));
-                Val b:Int = Self.a[0];
+                Return 1;
+            }
+            Val a:Int = Self.method();
+            main(){
+                Val a:Int = Self.method;
+                Val b:Int = Self.method;
+            }
+            
+        }
+        Class Program{
+            main(){
+                Return;
             }
         }
         

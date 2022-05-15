@@ -1,0 +1,23 @@
+
+            Class A{
+                $method(){
+                    Return 1;
+                }
+            }
+            Class B{
+                $method(){
+                    Return A::$method();
+                }
+            }
+            Class C{
+                $method(){
+                    Return B::$method();
+                }
+            }
+            Class Program{
+                main(){
+                    Return;
+                    Var a:Int = C::$method();
+                }
+            }
+             

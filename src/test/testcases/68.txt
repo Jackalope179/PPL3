@@ -1,6 +1,6 @@
 
             Class A{
-                Val c:Array[Array[Int,1],1] = Array(Array(1))
+                Val c:Array[Array[Int,1],1] = Array(Array(1));
                 Val b:Int = Self.c[0][0];
                 Val a:Int = Self.b;
                 program(){

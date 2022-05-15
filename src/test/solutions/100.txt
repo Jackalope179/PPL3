@@ -1,1 +1,1 @@
-Type Mismatch In Expression: BinaryOp(+,Id(b),Id(a))
+Redeclared Attribute: myVar

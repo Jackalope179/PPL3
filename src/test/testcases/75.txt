@@ -6,7 +6,8 @@
             Class Program{
                 main(){
                     Return;
-                    Var a:Int = C::$a;
+                    C::$a();
+                    Var a:Int = 1;
                 }
             }
              

@@ -1,0 +1,58 @@
+    def visitVarDecl(self, ctx, o):
+        if o.frame is None:
+            code = self.emit.printout(self.emit.emitATTRIBUTE(ctx.name, ctx.typ, False))
+            return Symbol(ctx.name, ctx.typ, CName(self.className))
+        else:
+            idx = o.frame.getNewIndex()
+            self.emit.printout(self.emit.emitVAR(idx, ctx.name, ctx.typ, o.frame.getStartLabel(), o.frame.getEndLabel()))
+            return Symbol(ctx.name, ctx.typ, Index(idx))
+
+    def visitId(self, ctx, o):
+        sym = next(filter(lambda x : x.name == ctx.name, o.sym), False) 
+        if o.isLeft:
+            if type(sym.value) is Index:
+                code = self.emit.emitWRITEVAR(sym.name, sym.mtype, sym.value.value, o .frame)
+            else:        
+                code = self.emit.emitPUTSTATIC(sym.value.value + "." + sym.name, sym.mtype, o .frame)
+        else:
+            if type(sym.value) is Index:
+                code = self.emit.emitREADVAR(sym.name, sym.mtype, sym.value.value, o.frame)
+            else:
+                code = self.emit.emitGETSTATIC(sym.value.value + "." + sym.name, sym.mtype, o .frame)
+        typ = sym.mtype
+        return code, typ
+
+    def visitAssign(self, ast, o):
+        rc, rt = self.visit(ast.rhs, Access(o.frame, o.sym, False))
+        self.emit.printout(rc)
+        lc, lt = self.visit(ast.lhs, Access(o.frame, o.sym, True))
+        self.emit.printout(lc)
+
+    def visitIf(self,ctx,o):
+        ec, et = self.visit(ctx.expr, Access(o.frame, o.sym, False))
+        self.emit.printout(ec)
+        falseLabel = o.frame.getNewLabel()
+        self.emit.printout(self.emit.emitIFFALSE(falseLabel, o.frame))
+        self.visit(ctx.tstmt, o)
+        if ctx.estmt:
+            exitLabel = o.frame.getNewLabel()
+            self.emit.printout(self.emit.emitGOTO(exitLabel, o.frame))
+            self.emit.printout(self.emit.emitLABEL(falseLabel, o.frame))
+            self.visit(ctx.estmt, o)
+            self.emit.printout(self.emit.emitLABEL(exitLabel, o.frame))
+        else:
+            self.emit.printout(self.emit.emitLABEL(falseLabel, o.frame))
+
+
+    def visitWhile(self,ctx,o):
+        o.frame.enterLoop()
+        breakLabel = o.frame.getBreakLabel()
+        continueLabel = o.frame.getContinueLabel()
+        self.emit.printout(self.emit.emitLABEL(continueLabel, o.frame))
+        rc, rt = self.visit(ctx.expr,Access(o.frame, o.sym, False))
+        self.emit.printout(rc)
+        self.emit.printout(self.emit.emitIFFALSE(breakLabel, o.frame))
+        self.visit(ctx.stmt, o)
+        self.emit.printout(self.emit.emitGOTO(continueLabel, o.frame))
+        self.emit.printout(self.emit.emitLABEL(breakLabel, o.frame))
+        o.frame.exitLoop()
