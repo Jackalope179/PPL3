@@ -1,2 +1,0 @@
-Cannot Assign To Constant: AssignStmt(FieldAccess(FieldAccess(Id('obj'),Id('h')),Id('ss')),StringLit('yeye'))
-Cannot Assign To Constant: AssignStmt(FieldAccess(Id(h),Id(ss)),StringLit(yeye))

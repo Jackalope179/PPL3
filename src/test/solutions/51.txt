@@ -1,1 +1,0 @@
-Illegal Constant Expression: BinaryOp(+,BinaryOp(+,BinaryOp(+,IntLit(1),Id(a)),Id(a)),IntLit(5))

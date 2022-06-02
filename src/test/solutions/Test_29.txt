@@ -1,1 +1,0 @@
-Type Mismatch In Statement: AssignStmt(Id(res),CallExpr(Id(shape),Id(calArea),[]))

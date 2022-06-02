@@ -1,1 +1,0 @@
-Illegal Constant Expression: CallExpr(Id(obj),Id(method),[])

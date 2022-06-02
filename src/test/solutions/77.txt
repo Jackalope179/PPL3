@@ -1,1 +1,0 @@
-Cannot Assign To Constant: AssignStmt(Id(c),ArrayCell(Id(c),[IntLit(0)]))

@@ -1,1 +1,0 @@
-Type Mismatch In Statement: AssignStmt(ArrayCell(Id(array),[Id(e)]),CallExpr(Id(A),Id($a),[]))

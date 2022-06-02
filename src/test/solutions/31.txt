@@ -1,1 +1,0 @@
-Illegal Constant Expression: ArrayCell(FieldAccess(Self(),Id(a)),[IntLit(0)])

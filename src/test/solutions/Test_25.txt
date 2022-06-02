@@ -1,1 +1,0 @@
-Type Mismatch In Statement: Call(Self(),Id(setArr),[[IntLit(1),IntLit(2),IntLit(3)]])

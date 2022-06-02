@@ -3,6 +3,7 @@ from StaticCheck import *
 from StaticError import *
 import CodeGenerator as cgen
 from MachineCode import JasminCode
+from main.d96.utils.AST import FloatType
 
 
 
@@ -20,10 +21,10 @@ class Emitter():
             return "Ljava/lang/String;"
         elif typeIn is VoidType:
             return "V"
-        elif typeIn is cgen.ArrayPointerType:
-            return "[" + self.getJVMType(inType.eleType)
         elif typeIn is MType:
-            return "(" + "".join(list(map(lambda x: self.getJVMType(x), inType.partype))) + ")" + self.getJVMType(inType.rettype)
+            return "(" + "".join(list(map(lambda x: self.getJVMType(x), inType.partype))) + ")" + "V"
+            # + self.getJVMType(inType.rettype)
+            
         elif typeIn is cgen.ClassType:
             return "L" + inType.cname + ";"
 
@@ -49,10 +50,10 @@ class Emitter():
                 return self.jvm.emitBIPUSH(i)
             elif i >= -32768 and i <= 32767:
                 return self.jvm.emitSIPUSH(i)
-        elif type(in_) is str:
-            if in_ == "true":
+        elif type(in_) is bool:
+            if in_ == True:
                 return self.emitPUSHICONST(1, frame)
-            elif in_ == "false":
+            elif in_ == False:
                 return self.emitPUSHICONST(0, frame)
             else:
                 return self.emitPUSHICONST(int(in_), frame)
@@ -569,11 +570,15 @@ class Emitter():
         #in_: Type
         #frame: Frame
 
-        if type(in_) is IntType:
+        if type(in_) is IntType or type(in_) is BoolType:
             frame.pop()
             return self.jvm.emitIRETURN()
+        elif type(in_) is FloatType:
+            frame.pop()
+            return self.jvm.emitFRETURN()
         elif type(in_) is VoidType:
             return self.jvm.emitRETURN()
+        return
 
     ''' generate code that represents a label	
     *   @param label the label
@@ -605,7 +610,7 @@ class Emitter():
         #parent: String
 
         result = list()
-        result.append(self.jvm.emitSOURCE(name + ".java"))
+        result.append(self.jvm.emitSOURCE("D96Class" + ".java"))
         result.append(self.jvm.emitCLASS("public " + name))
         result.append(self.jvm.emitSUPER("java/land/Object" if parent == "" else parent))
         return ''.join(result)
@@ -622,7 +627,12 @@ class Emitter():
 
     def emitEPILOG(self):
         file = open(self.filename, "w")
-        file.write(''.join(self.buff))
+        res = ""
+        for i in self.buff:
+            if not i: res += "return\n"
+            else:
+                res += i
+        file.write(res)
         file.close()
 
     ''' print out the code to screen
@@ -632,6 +642,10 @@ class Emitter():
         #in_: String
 
         self.buff.append(in_)
+
+    def emitNEW(self, lexeme):
+        #lexeme: String
+        return self.jvm.emitNEW(lexeme)
 
     def clearBuff(self):
         self.buff.clear()

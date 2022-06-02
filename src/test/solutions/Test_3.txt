@@ -1,1 +1,0 @@
-Cannot Assign To Constant: AssignStmt(FieldAccess(NewExpr(Id(A),[]),Id(a)),Id(a))
